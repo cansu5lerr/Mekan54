@@ -37,17 +37,7 @@ public class FirebaseService {
     @Autowired
     UserRepository userRepository;
 
-   /* public ResponseEntity<String> uploadFile(MultipartFile multipartFile) throws IOException {
-        String objectName = generateFileName(multipartFile);
-        FileInputStream serviceAccount = new FileInputStream(FIREBASE_SDK_JSON);
-        File file = convertMultiPartToFile(multipartFile);
-        Path filePath = file.toPath();
-        Storage storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).setProjectId(FIREBASE_PROJECT_ID).build().getService();
-        BlobId blobId = BlobId.of(FIREBASE_BUCKET, objectName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(multipartFile.getContentType()).build();
-        storage.create(blobInfo, Files.readAllBytes(filePath));
-        return ResponseEntity.status(HttpStatus.CREATED).body("file uploaded successfully");
-    } */
+
     public ResponseEntity<?> uploadImagUser (String token,MultipartFile multipartFile) throws IOException {
         User authenticatedUser  = userDetailsService.getAuthenticatedUserFromToken(token);
         if(authenticatedUser instanceof User) {
