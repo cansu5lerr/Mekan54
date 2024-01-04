@@ -90,25 +90,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 //
 //    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 //  }
-
-    @Bean
-    public List<Role> addRole() {
-        List<String> roleNames = Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_MODERATOR");
-        List<Role> roles = roleNames.stream()
-                .map(roleName -> {
-                    Optional<Role> existingRole = roleRepository.findByName(ERole.valueOf(roleName));
-                    return existingRole.orElseGet(() -> {
-                        Role newRole = new Role();
-                        newRole.setName(ERole.valueOf(roleName));
-                        return roleRepository.save(newRole);
-                    });
-                })
-                .collect(Collectors.toList());
-
-        return roles;
-    }
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
