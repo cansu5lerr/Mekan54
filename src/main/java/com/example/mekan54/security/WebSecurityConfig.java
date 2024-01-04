@@ -69,16 +69,21 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    @Bean
-    public void addRole() {
+  @Bean
+    public List<Role> addRole() {
         List<String> roleNames = Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_MODERATOR");
-        roleNames.forEach(roleName -> {
-            Optional<Role> existingRole = roleRepository.findByName(ERole.valueOf(roleName));
-            if (existingRole == null) {
-                Role newRole = new Role();
-                roleRepository.save(newRole);
-            }
-        });
+        List<Role> roles = roleNames.stream()
+                .map(roleName -> {
+                    Optional<Role> existingRole = roleRepository.findByName(ERole.valueOf(roleName));
+                    return existingRole.orElseGet(() -> {
+                        Role newRole = new Role();
+                        newRole.setName(ERole.valueOf(roleName));
+                        return roleRepository.save(newRole);
+                    });
+                })
+                .collect(Collectors.toList());
+
+        return roles;
     }
 
 //  @Override
