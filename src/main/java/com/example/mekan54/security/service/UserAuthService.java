@@ -103,13 +103,21 @@ public class UserAuthService implements UserDetailsService {
          // Create new user's account
          User user = new User(registerRequest.getName(), registerRequest.getSurname(), registerRequest.getEmail(),
                  encoder.encode(registerRequest.getPassword()));
-
          Set<Role> roles = new HashSet<>();
-         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-         roles.add(userRole);
-         user.setRoles(roles);
+         Optional<Role> userRole = roleRepository.findByName(ERole.ROLE_USER);
 
+         Role role;
+         if (!userRole.isPresent()) {
+             Role newRole = new Role();
+             newRole.setName(ERole.ROLE_USER);
+             roleRepository.save(newRole);
+             role = newRole;
+         } else {
+             role = userRole.get();
+         }
+
+         roles.add(role);
+         user.setRoles(roles);
          userRepository.save(user);
          Map<String, String> responseMap = new HashMap<>();
          responseMap.put("message", "Kullanıcı başarılı bir şekilde kaydedildi.");
