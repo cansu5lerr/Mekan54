@@ -69,6 +69,17 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    public void addRole() {
+        List<String> roleNames = Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_MODERATOR");
+        roleNames.forEach(roleName -> {
+            Optional<Role> existingRole = roleRepository.findByName(ERole.valueOf(roleName));
+            if (existingRole == null) {
+                Role newRole = new Role();
+                roleRepository.save(newRole);
+            }
+        });
+    }
 
 //  @Override
 //  protected void configure(HttpSecurity http) throws Exception {
