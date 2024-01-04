@@ -1,5 +1,8 @@
 package com.example.mekan54.security;
 
+import com.example.mekan54.model.ERole;
+import com.example.mekan54.model.Role;
+import com.example.mekan54.repository.RoleRepository;
 import com.example.mekan54.security.jwt.AuthEntryPointJwt;
 import com.example.mekan54.security.jwt.AuthTokenFilter;
 import com.example.mekan54.security.service.UserDetailsServiceImpl;
@@ -20,6 +23,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Configuration
@@ -30,6 +37,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    RoleRepository roleRepository;
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
@@ -69,7 +78,20 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-  @Bean
+
+//  @Override
+//  protected void configure(HttpSecurity http) throws Exception {
+//    http.cors().and().csrf().disable()
+//      .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+//      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+//      .authorizeRequests().antMatchers("/api/auth/**").permitAll()
+//      .antMatchers("/api/test/**").permitAll()
+//      .anyRequest().authenticated();
+//
+//    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+//  }
+
+    @Bean
     public List<Role> addRole() {
         List<String> roleNames = Arrays.asList("ROLE_ADMIN", "ROLE_USER", "ROLE_MODERATOR");
         List<Role> roles = roleNames.stream()
@@ -86,17 +108,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         return roles;
     }
 
-//  @Override
-//  protected void configure(HttpSecurity http) throws Exception {
-//    http.cors().and().csrf().disable()
-//      .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-//      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-//      .authorizeRequests().antMatchers("/api/auth/**").permitAll()
-//      .antMatchers("/api/test/**").permitAll()
-//      .anyRequest().authenticated();
-//
-//    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-//  }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
