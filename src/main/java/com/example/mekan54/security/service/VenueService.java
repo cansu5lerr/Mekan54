@@ -280,7 +280,64 @@ public class VenueService {
           return ResponseEntity.badRequest().body("Böyle bir mekan adı bulunmamaktadır.");
       }
   }*/
+ public ResponseEntity<?> updateVenue (String token, VenueUpdateRequest venueRequest) {
+     User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
+     if(authenticatedUser instanceof User) {
+         Optional<Venue> venueOptional = venueRepository.findById(authenticatedUser.getVenue().getId());
+         if(venueOptional.isPresent()) {
+             Venue venue = venueOptional.get();
+             Map<String, String> responseMap = new HashMap<>();
+             String[] requiredFields = {"venueName", "adress", "phoneNumber", "website", "workingHour", "categoryName"};
 
+             for (String field : requiredFields) {
+                 String value = getValueByFieldName(venueRequest, field);
+                 if (value == null) {
+                     responseMap.put(field, field + " boş olamaz.");
+                 }
+             }
+
+             if (!responseMap.isEmpty()) {
+                 responseMap.put("message", "Lütfen tüm zorunlu alanları doldurun.");
+                 return ResponseEntity.badRequest().body(responseMap);
+             }
+
+             venue.setVenueName(venueRequest.getVenueName());
+             venue.setAdress(venueRequest.getAdress());
+             venue.setPhoneNumber(venueRequest.getPhoneNumber());
+             venue.setWebsite(venueRequest.getWebsite());
+             venue.setWorkingHour(venueRequest.getWorkingHour());
+
+             String categoryName = venueRequest.getCategoryName();
+             if (categoryName != null) {
+                 Long categoryId = categoryService.getCategoryId(categoryName);
+                 Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
+
+                 if (optionalCategory.isPresent()) {
+                     Category category = optionalCategory.get();
+                     venue.setCategory(category);
+                     List<Venue> categoryVenue = new ArrayList<>();
+                     categoryVenue.add(venue);
+                     category.setVenues(categoryVenue);
+                     categoryRepository.save(category);
+                 } else {
+                     responseMap.put("message", "Hatalı kategori girdisi.");
+                     return ResponseEntity.badRequest().body(responseMap);
+                 }
+             }
+             venueRepository.save(venue);
+             // return ResponseEntity.ok().body(new VenueUpdateResponse(venue.getVenueName(),venue.getCategory().getCategoryName(), venueRequest.getAdress(), venueRequest.));
+             responseMap.put("message", "Mekan başarılı bir şekilde güncellendi.");
+             return ResponseEntity.ok().body(responseMap);
+
+         }
+         Map<String, String> responseMap = new HashMap<>();
+         responseMap.put("message", "Mekan bulunamadı.");
+         return ResponseEntity.badRequest().body(responseMap);
+     }
+     Map<String, String> responseMap = new HashMap<>();
+     responseMap.put("message", "Kullanıcı girişi başarısız.");
+     return ResponseEntity.badRequest().body(responseMap);
+ }
     public ResponseEntity<?> getVenuesByName(String token,String venueName) {
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if(user instanceof  User) {
@@ -337,13 +394,18 @@ public class VenueService {
         responseMap.put("error", "Hatalı giriş.");
         return ResponseEntity.badRequest().body(responseMap);
     }
-     public ResponseEntity<?> updateVenue (String token, VenueUpdateRequest venueRequest) {
+ /*    public ResponseEntity<?> updateVenue (String token, VenueUpdateRequest venueRequest) {
       User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
       if(authenticatedUser instanceof User) {
           Optional<Venue> venueOptional = venueRepository.findById(authenticatedUser.getVenue().getId());
           if(venueOptional.isPresent()) {
               Venue venue = venueOptional.get();
-              if(!venueRequest.getVenueName().isEmpty()) {
+              if (venueRequest.getVenueName() == null) {
+                  Map<String, String> responseMap = new HashMap<>();
+                  responseMap.put("message", "Mekan adı (venueName) boş olamaz.");
+                  return ResponseEntity.badRequest().body(responseMap);
+              }
+              if(venueRequest.getVenueName() !=null) {
                   venue.setVenueName(venueRequest.getVenueName());
               }
               if(!venueRequest.getAdress().isEmpty()) {
@@ -357,9 +419,6 @@ public class VenueService {
               }
               if(!venueRequest.getWorkingHour().isEmpty()){
                   venue.setWorkingHour(venueRequest.getWorkingHour());
-              }
-              if(!venueRequest.getPhoneNumber().isEmpty()) {
-                  venue.setPhoneNumber(venueRequest.getPhoneNumber());
               }
               if(!venueRequest.getCategoryName().isEmpty()) {
                  String categoryName = venueRequest.getCategoryName();
@@ -392,8 +451,11 @@ public class VenueService {
       }
          Map<String, String> responseMap = new HashMap<>();
          responseMap.put("message", "Kullanıcı girişi başarısız.");
-      return ResponseEntity.badRequest().body(responseMap);
+        return ResponseEntity.badRequest().body(responseMap);
      }
+
+  */
+
      public ResponseEntity<?> getVenueOwner (String token) {
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if(user instanceof User) {
@@ -437,5 +499,17 @@ public class VenueService {
          responseMap.put("message", "Kullanıcı başarılı bir şekilde kaydedildi.");
          return ResponseEntity.badRequest().body(responseMap);
      }
+
+    private String getValueByFieldName(VenueUpdateRequest venueRequest, String fieldName) {
+        switch (fieldName) {
+            case "venueName": return venueRequest.getVenueName();
+            case "adress": return venueRequest.getAdress();
+            case "phoneNumber": return venueRequest.getPhoneNumber();
+            case "website": return venueRequest.getWebsite();
+            case "workingHour": return venueRequest.getWorkingHour();
+            case "categoryName": return venueRequest.getCategoryName();
+            default: return null;
+        }
+    }
 
 }
