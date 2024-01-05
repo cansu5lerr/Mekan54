@@ -48,13 +48,9 @@ public class VenueController {
        LOGGER.log(Level.INFO, "updateVenue API response: {0}", responseEntity.getBody());
        return responseEntity;
    }  */
- @PostMapping("/updateVenue")
+  @PostMapping("/updateVenue")
   public ResponseEntity<?> updateVenue(@RequestHeader("Authorization") String token, @RequestBody VenueUpdateRequest venueRequest) {
-      Map<String, Object> responseMap = new HashMap<>();
-      if (token != null) {
-          responseMap.put("token", token);
-      }
-      return ResponseEntity.ok().body(responseMap);
+   return venueService.updateVenue(token,venueRequest);
   }
    @GetMapping("/venueOwner")
     public ResponseEntity<?> getVenueOwner(@RequestHeader("Authorization") String token) {
