@@ -1,5 +1,6 @@
 package com.example.mekan54.security.service;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import com.example.mekan54.model.*;
 import com.example.mekan54.payload.request.CategoryNameRequest;
 import com.example.mekan54.payload.request.RegisterAdminRequest;
@@ -35,7 +36,9 @@ public class VenueService {
     UserDetailsServiceImpl userDetailsService;
     @Autowired
     ImageService imageService;
-//Venue ekle
+    private static final Logger LOGGER = Logger.getLogger(VenueService.class.getName());
+
+    //Venue ekle
     public ResponseEntity<?> registerAdmin(RegisterAdminRequest registerAdminRequest) {
 
         String[] fieldsToCheck = {"Mekan adı", "Adres", "Email", "Kategori", "Sifre", "SifreTekrarı"};
@@ -280,7 +283,7 @@ public class VenueService {
           return ResponseEntity.badRequest().body("Böyle bir mekan adı bulunmamaktadır.");
       }
   }*/
- public ResponseEntity<?> updateVenue (String token, VenueUpdateRequest venueRequest) {
+ /*public ResponseEntity<?> updateVenue (String token, VenueUpdateRequest venueRequest) {
      User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
      if(authenticatedUser instanceof User) {
          Optional<Venue> venueOptional = venueRepository.findById(authenticatedUser.getVenue().getId());
@@ -337,6 +340,79 @@ public class VenueService {
      Map<String, String> responseMap = new HashMap<>();
      responseMap.put("message", "Kullanıcı girişi başarısız.");
      return ResponseEntity.badRequest().body(responseMap);
+ }
+
+  */
+ public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueRequest) {
+     LOGGER.log(Level.INFO, "updateVenue method called with token: {0}", token);
+
+     User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
+     if (authenticatedUser instanceof User) {
+         LOGGER.log(Level.INFO, "Authenticated user found.");
+
+         Optional<Venue> venueOptional = venueRepository.findById(authenticatedUser.getVenue().getId());
+         if (venueOptional.isPresent()) {
+             Venue venue = venueOptional.get();
+             LOGGER.log(Level.INFO, "Venue found: {0}", venue);
+
+             Map<String, String> responseMap = new HashMap<>();
+             String[] requiredFields = {"venueName", "adress", "phoneNumber", "website", "workingHour", "categoryName"};
+
+             for (String field : requiredFields) {
+                 String value = getValueByFieldName(venueRequest, field);
+                 if (value == null) {
+                     responseMap.put(field, field + " boş olamaz.");
+                 }
+             }
+
+             if (!responseMap.isEmpty()) {
+                 responseMap.put("message", "Lütfen tüm zorunlu alanları doldurun.");
+                 LOGGER.log(Level.WARNING, "Validation error: {0}", responseMap);
+                 return ResponseEntity.badRequest().body(responseMap);
+             }
+
+             venue.setVenueName(venueRequest.getVenueName());
+             venue.setAdress(venueRequest.getAdress());
+             venue.setPhoneNumber(venueRequest.getPhoneNumber());
+             venue.setWebsite(venueRequest.getWebsite());
+             venue.setWorkingHour(venueRequest.getWorkingHour());
+
+             String categoryName = venueRequest.getCategoryName();
+             if (categoryName != null) {
+                 Long categoryId = categoryService.getCategoryId(categoryName);
+                 Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
+
+                 if (optionalCategory.isPresent()) {
+                     Category category = optionalCategory.get();
+                     venue.setCategory(category);
+                     List<Venue> categoryVenue = new ArrayList<>();
+                     categoryVenue.add(venue);
+                     category.setVenues(categoryVenue);
+                     categoryRepository.save(category);
+                 } else {
+                     responseMap.put("message", "Hatalı kategori girdisi.");
+                     LOGGER.log(Level.WARNING, "Invalid category input.");
+                     return ResponseEntity.badRequest().body(responseMap);
+                 }
+             }
+
+             venueRepository.save(venue);
+             LOGGER.log(Level.INFO, "Venue successfully updated.");
+             responseMap.put("message", "Mekan başarılı bir şekilde güncellendi.");
+             return ResponseEntity.ok().body(responseMap);
+
+         } else {
+             LOGGER.log(Level.WARNING, "Venue not found.");
+             Map<String, String> responseMap = new HashMap<>();
+             responseMap.put("message", "Mekan bulunamadı.");
+             return ResponseEntity.badRequest().body(responseMap);
+         }
+     } else {
+         LOGGER.log(Level.WARNING, "Authentication failed.");
+         Map<String, String> responseMap = new HashMap<>();
+         responseMap.put("message", "Kullanıcı girişi başarısız.");
+         return ResponseEntity.badRequest().body(responseMap);
+     }
  }
     public ResponseEntity<?> getVenuesByName(String token,String venueName) {
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
