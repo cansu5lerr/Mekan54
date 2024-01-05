@@ -8,6 +8,9 @@ import com.example.mekan54.security.service.VenueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +38,7 @@ public class VenueController {
     public ResponseEntity<?> getVenueName(@RequestHeader("Authorization") String token ,@RequestBody VenueNameRequest venueNameResquest){
         return venueService.getVenuesByName(token,venueNameResquest.getVenueName());
    }
-   @PostMapping("/updateVenue")
+  /* @PostMapping("/updateVenue")
     public ResponseEntity<?> updateVenue(@RequestHeader("Authorization") String token , @RequestBody VenueUpdateRequest venueRequest) {
        LOGGER.log(Level.INFO, "updateVenue API called with token: {0}", token);
        LOGGER.log(Level.INFO, "VenueUpdateRequest: {0}", venueRequest);
@@ -44,12 +47,44 @@ public class VenueController {
 
        LOGGER.log(Level.INFO, "updateVenue API response: {0}", responseEntity.getBody());
        return responseEntity;
-   }
+   }  */
+  @PostMapping("/updateVenue")
+  public ResponseEntity<?> updateVenue(@RequestHeader("Authorization") String token, @RequestBody VenueUpdateRequest venueRequest) {
+      if (token == null || token.isEmpty()) {
+          Map<String, String> errorMap = new HashMap<>();
+          errorMap.put("message", "Token boş olamaz.");
+          return ResponseEntity.badRequest().body(errorMap);
+      }
+
+      if (venueRequest == null || isAnyFieldEmpty(venueRequest)) {
+          Map<String, String> errorMap = new HashMap<>();
+          errorMap.put("message", "Venue güncelleme isteği boş olamaz.");
+          return ResponseEntity.badRequest().body(errorMap);
+      }
+
+      ResponseEntity<?> responseEntity = venueService.updateVenue(token, venueRequest);
+
+      if (responseEntity == null) {
+          Map<String, String> errorMap = new HashMap<>();
+          errorMap.put("message", "Güncelleme işlemi sırasında bir hata oluştu.");
+          return ResponseEntity.badRequest().body(errorMap);
+      } else {
+          return responseEntity;
+      }
+  }
    @GetMapping("/venueOwner")
     public ResponseEntity<?> getVenueOwner(@RequestHeader("Authorization") String token) {
         return venueService.getVenueOwner(token);
    }
 
+    private boolean isAnyFieldEmpty(VenueUpdateRequest venueRequest) {
+        return venueRequest.getVenueName().isEmpty() ||
+                venueRequest.getAdress().isEmpty() ||
+                venueRequest.getPhoneNumber().isEmpty() ||
+                venueRequest.getWebsite().isEmpty() ||
+                venueRequest.getWorkingHour().isEmpty() ||
+                venueRequest.getCategoryName().isEmpty();
+    }
 }
 
 
