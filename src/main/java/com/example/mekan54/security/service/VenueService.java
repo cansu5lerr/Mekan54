@@ -373,6 +373,11 @@ public class VenueService {
                      category.setVenues(categoryVenue);
                      categoryRepository.save(category);
                  }
+                 else {
+                     Map<String, String> responseMap = new HashMap<>();
+                     responseMap.put("message", "hatalı girdi");
+                     return ResponseEntity.badRequest().body(responseMap);
+                 }
               }
               venueRepository.save(venue);
              // return ResponseEntity.ok().body(new VenueUpdateResponse(venue.getVenueName(),venue.getCategory().getCategoryName(), venueRequest.getAdress(), venueRequest.));
