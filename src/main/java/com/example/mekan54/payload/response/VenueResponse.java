@@ -19,6 +19,16 @@ public class VenueResponse {
 
     private List<String> imgUrl;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    private Long id;
+
     public List<Map<String, String>> getComments() {
         return comments;
     }
