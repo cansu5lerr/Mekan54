@@ -48,29 +48,19 @@ public class VenueController {
        LOGGER.log(Level.INFO, "updateVenue API response: {0}", responseEntity.getBody());
        return responseEntity;
    }  */
-  @PostMapping("/updateVenue")
+ @PostMapping("/updateVenue")
   public ResponseEntity<?> updateVenue(@RequestHeader("Authorization") String token, @RequestBody VenueUpdateRequest venueRequest) {
-      if (token == null || token.isEmpty()) {
-          Map<String, String> errorMap = new HashMap<>();
-          errorMap.put("message", "Token boş olamaz.");
-          return ResponseEntity.badRequest().body(errorMap);
+      Map<String, Object> responseMap = new HashMap<>();
+
+      if (token != null) {
+          responseMap.put("token", token);
       }
 
-      if (venueRequest == null || isAnyFieldEmpty(venueRequest)) {
-          Map<String, String> errorMap = new HashMap<>();
-          errorMap.put("message", "Venue güncelleme isteği boş olamaz.");
-          return ResponseEntity.badRequest().body(errorMap);
+      if (venueRequest != null) {
+          responseMap.put("venueRequest", venueRequest);
       }
 
-      ResponseEntity<?> responseEntity = venueService.updateVenue(token, venueRequest);
-
-      if (responseEntity == null) {
-          Map<String, String> errorMap = new HashMap<>();
-          errorMap.put("message", "Güncelleme işlemi sırasında bir hata oluştu.");
-          return ResponseEntity.badRequest().body(errorMap);
-      } else {
-          return responseEntity;
-      }
+      return ResponseEntity.ok().body(responseMap);
   }
    @GetMapping("/venueOwner")
     public ResponseEntity<?> getVenueOwner(@RequestHeader("Authorization") String token) {
