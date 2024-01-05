@@ -2,16 +2,14 @@ package com.example.mekan54.payload.request;
 
 public class EmailRequest {
 
-    public String getGenerateToken() {
-        return generateToken;
+
+    private String email;
+
+    public String getEmail() {
+        return email;
     }
 
-    public void setGenerateToken(String generateToken) {
-        this.generateToken = generateToken;
+    public void setEmail(String email) {
+        this.email = email;
     }
-
-    private String generateToken;
-
-
-
 }
