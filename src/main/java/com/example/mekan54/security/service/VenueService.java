@@ -68,10 +68,25 @@ public class VenueService {
         }
         User user = new User(registerAdminRequest.getEmail(),
                 encoder.encode(registerAdminRequest.getPassword()));
-        Set<Role> roles = new HashSet<>();
+     /*   Set<Role> roles = new HashSet<>();
         Role userRole = roleRepository.findByName(ERole.ROLE_ADMIN)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         roles.add(userRole);
+        user.setRoles(roles); */
+        Set<Role> roles = new HashSet<>();
+        Optional<Role> userRole = roleRepository.findByName(ERole.ROLE_ADMIN);
+
+        Role role;
+        if (!userRole.isPresent()) {
+            Role newRole = new Role();
+            newRole.setName(ERole.ROLE_ADMIN);
+            roleRepository.save(newRole);
+            role = newRole;
+        } else {
+            role = userRole.get();
+        }
+
+        roles.add(role);
         user.setRoles(roles);
         userRepository.save(user);
         Long categoryId = categoryService.getCategoryId(registerAdminRequest.getCategoryName());
