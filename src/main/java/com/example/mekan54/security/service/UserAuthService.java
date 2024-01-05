@@ -156,33 +156,41 @@ public class UserAuthService implements UserDetailsService {
                     user.setPassword(encoder.encode(resetPassword.getPassword()));
                     user.setGenerateCode(null);
                     userRepository.save(user);
-                    return ResponseEntity.ok("Şifre sıfırlama işlemi başarılı.");
+                    Map<String, String> messageResponse = new HashMap<>();
+                    messageResponse.put("message", "Şifre sıfırlama işlemi başarılı.");
+                    return ResponseEntity.ok().body(messageResponse);
                 } else {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Şifreler eşleşmiyor.");
+                    Map<String, String> messageResponse = new HashMap<>();
+                    messageResponse.put("message", "Şifreler eşleşmiyor.");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
                 }
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Kullanıcı bulunamadı.");            }
+                Map<String, String> messageResponse = new HashMap<>();
+                messageResponse.put("message", "Kod hatalı");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageResponse);            }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Bir hata oluştu.");
+            Map<String, String> messageResponse = new HashMap<>();
+            messageResponse.put("message", "Bir hata oluştu.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(messageResponse);
         }
     }
 
     public ResponseEntity <?>isGeneratedPassword(String generatedPassword) {
-        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> messageResponse = new HashMap<>();
         if (generatedPassword == null || generatedPassword.trim().isEmpty()) {
-            response.put("message", "Hatalı kod");
-            response.put("isGenerated", false);
+            messageResponse.put("message", "Hatalı kod");
+            messageResponse.put("isGenerated", false);
         } else {
             Optional<User> userOptional = userRepository.findByGenerateCode(generatedPassword);
             if (userOptional.isPresent() && userOptional.get().getGenerateCode() != null) {
-                response.put("message", "Başarılı");
-                response.put("isGenerated", true);
+                messageResponse.put("message", "Başarılı");
+                messageResponse.put("isGenerated", true);
             } else {
-                response.put("message", "Hatalı kod");
-                response.put("isGenerated", false);
+                messageResponse.put("message", "Hatalı kod");
+                messageResponse.put("isGenerated", false);
             }
         }
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(messageResponse);
     }
     public ResponseEntity<?> updateUser (String token, UserUpdateRequest userUpdateRequest) {
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
