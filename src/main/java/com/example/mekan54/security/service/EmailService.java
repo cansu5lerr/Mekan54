@@ -47,12 +47,12 @@ public class EmailService {
         }
     } */
     public ResponseEntity<?> sendMail(EmailRequest emailRequest){
-        try {
-            Optional<User> userOptional = userRepository.findByEmail(emailRequest.getGenerateToken());
+
+            Optional<User> userOptional = userRepository.findByEmail(emailRequest.getEmail());
             if(userOptional.isPresent()){
                 User user = userOptional.get();
                 SimpleMailMessage message = new SimpleMailMessage();
-                String to = emailRequest.getGenerateToken();
+                String to = emailRequest.getEmail();
                 message.setTo(to);
                 String subject ="Parola Sıfırlama";
                 message.setSubject(subject);
@@ -61,14 +61,14 @@ public class EmailService {
                 message.setText("Tek kullanımlık kodunuz: "+text);
                 mailSender.send(message);
                 userRepository.save(user);
+                Map<String, String> responseMap = new HashMap<>();
+                responseMap.put("message", emailRequest.getEmail()+" hesabınıza kod gönderildi. Kontrol ediniz.");
+                return ResponseEntity.ok().body(responseMap);
             }
-        }
-        catch (MailException e) {
-            e.printStackTrace();
-        }
-        Map<String, String> responseMap = new HashMap<>();
-        responseMap.put(emailRequest.getGenerateToken(), " hesabınıza kod gönderildi. Kontrol ediniz.");
-        return ResponseEntity.ok().body(responseMap);
+           Map<String, String> responseMap = new HashMap<>();
+           responseMap.put( "message","Bu email adresi bulunmamaktadır.");
+        return ResponseEntity.badRequest().body(responseMap);
+
     }
     public static String generateFiveDigitRandomCode() {
         StringBuilder code = new StringBuilder();
