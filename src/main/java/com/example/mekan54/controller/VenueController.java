@@ -51,15 +51,9 @@ public class VenueController {
  @PostMapping("/updateVenue")
   public ResponseEntity<?> updateVenue(@RequestHeader("Authorization") String token, @RequestBody VenueUpdateRequest venueRequest) {
       Map<String, Object> responseMap = new HashMap<>();
-
       if (token != null) {
           responseMap.put("token", token);
       }
-
-      if (venueRequest != null) {
-          responseMap.put("venueRequest", venueRequest);
-      }
-
       return ResponseEntity.ok().body(responseMap);
   }
    @GetMapping("/venueOwner")
