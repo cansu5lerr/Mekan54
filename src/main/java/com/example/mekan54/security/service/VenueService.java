@@ -376,19 +376,18 @@ public class VenueService {
               }
               venueRepository.save(venue);
              // return ResponseEntity.ok().body(new VenueUpdateResponse(venue.getVenueName(),venue.getCategory().getCategoryName(), venueRequest.getAdress(), venueRequest.));
-              return ResponseEntity.ok().body(new VenueUpdateResponse(
-                      venue.getId(),
-                      venue.getVenueName(),
-                      venue.getCategory().getCategoryName(),
-                      venue.getPhoneNumber(),
-                      venue.getWorkingHour(),
-                      venue.getWebsite(),
-                      venue.getAdress()
-              ));
+              Map<String, String> responseMap = new HashMap<>();
+              responseMap.put("message", "Mekan başarılı bir şekilde güncellendi.");
+              return ResponseEntity.ok().body(responseMap);
+
           }
-          return ResponseEntity.badRequest().body("Mekan bulunamadı.");
+          Map<String, String> responseMap = new HashMap<>();
+          responseMap.put("message", "Mekan bulunamadı.");
+          return ResponseEntity.badRequest().body(responseMap);
       }
-      return ResponseEntity.badRequest().body("Kullanıcı girişi başarısız.");
+         Map<String, String> responseMap = new HashMap<>();
+         responseMap.put("message", "Kullanıcı girişi başarısız.");
+      return ResponseEntity.badRequest().body(responseMap);
      }
      public ResponseEntity<?> getVenueOwner (String token) {
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
