@@ -149,6 +149,7 @@ public class VenueService {
                         imageUrls.add(image.getImgUrl());
                     }
                 }
+                venuesResponse.setId(venue.getId());
                 venuesResponse.setImgUrl(imageUrls);
                 venuesResponse.setAdress(venue.getAdress());
                 venuesResponse.setCategoryName(venue.getCategory().getCategoryName());
@@ -164,6 +165,7 @@ public class VenueService {
                             : null;
 
                     commentMap.put("imgUrl", imgUrl);
+                    commentMap.put("id", comment.getId().toString());
                     commentsResponseList.add(commentMap);
                 }
                 Map<String, String> aboutMap = new HashMap<>();
@@ -195,6 +197,7 @@ public class VenueService {
                     venuesResponse.setCategoryName(venue.getCategory().getCategoryName());
                     venuesResponse.setVenueName(venue.getVenueName());
                     venuesResponse.setAdress(venue.getAdress());
+                    venuesResponse.setId(venue.getId());
                     List<String> imageUrls = new ArrayList<>();
                     List<Image> images = venue.getImages();
                     if (images != null && !images.isEmpty()) {
@@ -216,6 +219,7 @@ public class VenueService {
                                 : null;
 
                         commentMap.put("imgUrl", imgUrl);
+                        commentMap.put("id", comment.getId().toString());
                         commentsResponseList.add(commentMap);
                     }
 
@@ -287,7 +291,7 @@ public class VenueService {
         for (Venue venue : venues) {
             VenueResponse venuesResponse = new VenueResponse();
             venuesResponse.setVenueName(venue.getVenueName());
-
+            venuesResponse.setId(venue.getId());
             List<String> imageUrls = new ArrayList<>();
             List<Image> images = venue.getImages();
             if (images != null && !images.isEmpty()) {
@@ -311,7 +315,9 @@ public class VenueService {
                         ? comment.getUser().getProfileImage().getImgUrl()
                         : null;
 
-                commentMap.put("imgUrl", imgUrl);                commentsResponseList.add(commentMap);
+                commentMap.put("imgUrl", imgUrl);
+                commentMap.put("id", comment.getId().toString());
+                commentsResponseList.add(commentMap);
             }
 
             Map<String, String> aboutMap = new HashMap<>();
@@ -347,10 +353,10 @@ public class VenueService {
                   venue.setPhoneNumber(venueRequest.getPhoneNumber());
               }
               if(!venueRequest.getWebsite().isEmpty()) {
-                  venue.setPhoneNumber(venueRequest.getWebsite());
+                  venue.setWebsite(venueRequest.getWebsite());
               }
               if(!venueRequest.getWorkingHour().isEmpty()){
-                  venue.setWorkingHour(venue.getWorkingHour());
+                  venue.setWorkingHour(venueRequest.getWorkingHour());
               }
               if(!venueRequest.getPhoneNumber().isEmpty()) {
                   venue.setPhoneNumber(venueRequest.getPhoneNumber());
@@ -371,6 +377,7 @@ public class VenueService {
               venueRepository.save(venue);
              // return ResponseEntity.ok().body(new VenueUpdateResponse(venue.getVenueName(),venue.getCategory().getCategoryName(), venueRequest.getAdress(), venueRequest.));
               return ResponseEntity.ok().body(new VenueUpdateResponse(
+                      venue.getId(),
                       venue.getVenueName(),
                       venue.getCategory().getCategoryName(),
                       venue.getPhoneNumber(),
@@ -398,6 +405,7 @@ public class VenueService {
                 }
             }
             venueResponse.setImgUrl(imageUrls);
+            venueResponse.setId(venue.getId());
             venueResponse.setFavoriteSize(venue.getFavorites().size());
             List<Map<String, String>> commentsResponseList = new ArrayList<>();
             for (Comment comment : venue.getComments()) {
@@ -405,8 +413,11 @@ public class VenueService {
                 commentMap.put("name", comment.getUser().getName());
                 commentMap.put("surname", comment.getUser().getSurname());
                 commentMap.put("comment", comment.getContent());
-                commentMap.put("imgUrl", comment.getUser().getProfileImage().getImgUrl());
-
+                String imgUrl = (comment.getUser() != null && comment.getUser().getProfileImage() != null)
+                        ? comment.getUser().getProfileImage().getImgUrl()
+                        : null;
+                commentMap.put("imgUrl", imgUrl);
+                commentMap.put("id", comment.getId().toString());
                 commentsResponseList.add(commentMap);
             }
             Map<String, String> aboutMap = new HashMap<>();
@@ -415,6 +426,7 @@ public class VenueService {
             aboutMap.put("address", venue.getAdress());
             aboutMap.put("webSite", venue.getWebsite());
             venueResponse.setAbout(aboutMap);
+            venueResponse.setComments(commentsResponseList);
             return ResponseEntity.ok().body(venueResponse);
         }
          Map<String, String> responseMap = new HashMap<>();
