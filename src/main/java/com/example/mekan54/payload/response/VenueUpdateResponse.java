@@ -34,7 +34,17 @@ public class VenueUpdateResponse {
     private String workingHour;
     private String website;
 
-    public VenueUpdateResponse(String venueName, String categoryName, String phoneNumber, String workingHour, String website, String adress) {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    private Long id;
+    public VenueUpdateResponse(Long id,String venueName, String categoryName, String phoneNumber, String workingHour, String website, String adress) {
+       this.id = id;
         this.venueName = venueName;
         this.categoryName = categoryName;
         this.phoneNumber = phoneNumber;
