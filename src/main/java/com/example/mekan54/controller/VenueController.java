@@ -8,7 +8,8 @@ import com.example.mekan54.security.service.VenueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 public class VenueController {
     @Autowired
     VenueService venueService;
+    private static final Logger LOGGER = Logger.getLogger(VenueController.class.getName());
+
     @PostMapping("/owner/register")
     public ResponseEntity<?> addAdmin(@RequestBody RegisterAdminRequest registerAdminRequest) {
         return venueService.registerAdmin(registerAdminRequest);
@@ -34,7 +37,13 @@ public class VenueController {
    }
    @PostMapping("/updateVenue")
     public ResponseEntity<?> updateVenue(@RequestHeader("Authorization") String token , @RequestBody VenueUpdateRequest venueRequest) {
-        return venueService.updateVenue(token,venueRequest);
+       LOGGER.log(Level.INFO, "updateVenue API called with token: {0}", token);
+       LOGGER.log(Level.INFO, "VenueUpdateRequest: {0}", venueRequest);
+
+       ResponseEntity<?> responseEntity = venueService.updateVenue(token, venueRequest);
+
+       LOGGER.log(Level.INFO, "updateVenue API response: {0}", responseEntity.getBody());
+       return responseEntity;
    }
    @GetMapping("/venueOwner")
     public ResponseEntity<?> getVenueOwner(@RequestHeader("Authorization") String token) {
