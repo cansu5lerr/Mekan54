@@ -23,7 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.Objects;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static com.example.mekan54.config.Constants.*;
 
 @Service
@@ -36,6 +37,7 @@ public class FirebaseService {
 
     @Autowired
     UserRepository userRepository;
+    private static final Logger LOGGER = Logger.getLogger(VenueService.class.getName());
 
 
     public ResponseEntity<?> uploadImagUser (String token,MultipartFile multipartFile) throws IOException {
@@ -61,12 +63,16 @@ public class FirebaseService {
         return ResponseEntity.badRequest().body("Dosya kaydedilemedi.");
     }
 
-    public ResponseEntity<?> uploadImageVenue (String token,MultipartFile multipartFile) throws IOException {
-     User authenticatedUser  = userDetailsService.getAuthenticatedUserFromToken(token);
+   public ResponseEntity<?> uploadImageVenue (String token,MultipartFile multipartFile) throws IOException {
+        LOGGER.log(Level.INFO, "uploadImageVenue metodu, token: {0} ile çağrıldı.", token);
+
+        User authenticatedUser  = userDetailsService.getAuthenticatedUserFromToken(token);
      if(authenticatedUser instanceof User) {
          String objectName = authenticatedUser.getVenue() != null ?
                  authenticatedUser.getVenue().getId() +"-" +authenticatedUser.getVenue().getVenueName()
                  : "";
+         LOGGER.log(Level.INFO, "Dosya adı oluşturuluyor: {0}", objectName);
+
          FileInputStream serviceAccount = new FileInputStream(FIREBASE_SDK_JSON);
          File file = convertMultiPartToFile(multipartFile);
          Path filePath = file.toPath();
@@ -76,13 +82,19 @@ public class FirebaseService {
 
          storage.create(blobInfo, Files.readAllBytes(filePath));
          String fileUrl = getFileUrl(objectName); // Burada objectName, dosyanın adını temsil eder
+         LOGGER.log(Level.INFO, "Dosya başarıyla yüklendi. Dosya URL: {0}", fileUrl);
+
          Venue venue = authenticatedUser.getVenue();
         // venue.setImgUrl(fileUrl);
          venueRepository.save(venue);
-         return ResponseEntity.status(HttpStatus.CREATED).body("File uploaded successfully. File URL: " + fileUrl);
+         Map<String, String> responseMap = new HashMap<>();
+         responseMap.put("message", fileUrl);
+         return ResponseEntity.status(HttpStatus.CREATED).body(fileUrl);
 
      }
-        return ResponseEntity.badRequest().body("Dosya kaydedilemedi.");
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("message",  "Dosya kaydedilemedi.");
+        return ResponseEntity.badRequest().body(responseMap);
     }
 
     private ResponseEntity<?> uploadImage(String token, MultipartFile multipartFile, String objectName) throws IOException {
