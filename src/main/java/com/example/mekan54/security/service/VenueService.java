@@ -343,7 +343,7 @@ public class VenueService {
  }
 
   */
- public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueRequest) {
+public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueRequest) {
      LOGGER.log(Level.INFO, "updateVenue method called with token: {0}", token);
 
      User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
@@ -362,6 +362,9 @@ public class VenueService {
                  String value = getValueByFieldName(venueRequest, field);
                  if (value == null) {
                      responseMap.put(field, field + " boş olamaz.");
+
+                     LOGGER.log(Level.WARNING, "Validation error: Field '{0}' is required but empty.", field);
+
                  }
              }
 
@@ -370,14 +373,22 @@ public class VenueService {
                  LOGGER.log(Level.WARNING, "Validation error: {0}", responseMap);
                  return ResponseEntity.badRequest().body(responseMap);
              }
-
+             LOGGER.log(Level.INFO, "Mekan adı güncelleniyor: {0}", venueRequest.getVenueName());
              venue.setVenueName(venueRequest.getVenueName());
+             LOGGER.log(Level.INFO, "Mekan adresi güncelleniyor: {0}", venueRequest.getAdress());
              venue.setAdress(venueRequest.getAdress());
+             LOGGER.log(Level.INFO, "Mekan telefon numarası güncelleniyor: {0}", venueRequest.getPhoneNumber());
              venue.setPhoneNumber(venueRequest.getPhoneNumber());
+             LOGGER.log(Level.INFO, "Mekan web sitesi güncelleniyor: {0}", venueRequest.getWebsite());
              venue.setWebsite(venueRequest.getWebsite());
+             LOGGER.log(Level.INFO, "Mekan çalışma saatleri güncelleniyor: {0}", venueRequest.getWorkingHour());
+
              venue.setWorkingHour(venueRequest.getWorkingHour());
+             LOGGER.log(Level.INFO, "Her şey güncellendi: {0}", venueRequest.getWorkingHour());
 
              String categoryName = venueRequest.getCategoryName();
+             LOGGER.log(Level.INFO, "categoryName bulundu {0}", categoryName);
+
              if (categoryName != null) {
                  Long categoryId = categoryService.getCategoryId(categoryName);
                  Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
@@ -389,6 +400,8 @@ public class VenueService {
                      categoryVenue.add(venue);
                      category.setVenues(categoryVenue);
                      categoryRepository.save(category);
+                     LOGGER.log(Level.INFO, "Category updated for venue. Category ID: {0}", categoryId);
+
                  } else {
                      responseMap.put("message", "Hatalı kategori girdisi.");
                      LOGGER.log(Level.WARNING, "Invalid category input.");
