@@ -572,7 +572,7 @@ public class VenueService {
             return ResponseEntity.ok().body(venueResponse);
         }
          Map<String, String> responseMap = new HashMap<>();
-         responseMap.put("message", "Kullanıcı başarılı bir şekilde kaydedildi.");
+         responseMap.put("message", "Kullanıcı girişi başarısız.");
          return ResponseEntity.badRequest().body(responseMap);
      }
 
