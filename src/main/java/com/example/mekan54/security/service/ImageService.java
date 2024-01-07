@@ -52,9 +52,7 @@ public class ImageService {
                     .build()
                     .getService();
             BlobId blobId = BlobId.of(FIREBASE_BUCKET, objectName);
-            BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
-                    .setContentType(multipartFile.getContentType())
-                    .build();
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/png").build();
             storage.create(blobInfo, Files.readAllBytes(filePath));
             String fileUrl = getFileUrl(objectName);
             if (objectName.startsWith("user-")) {
@@ -73,7 +71,6 @@ public class ImageService {
                     if (existingImages == null) {
                         existingImages = new ArrayList<>();
                     }
-
                     image.setImgUrl(fileUrl);
                     existingImages.add(image);
                     venue.setImages(existingImages);
@@ -82,11 +79,13 @@ public class ImageService {
                     venueRepository.save(venue);
                 }
             }
-
-            return ResponseEntity.status(HttpStatus.CREATED).body("Dosya başarıyla yüklendi. Dosya URL: " + fileUrl);
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("message", fileUrl);
+            return ResponseEntity.status(HttpStatus.CREATED).body(fileUrl);
         }
-
-        return ResponseEntity.badRequest().body("Dosya kaydedilemedi.");
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("message",  "Dosya kaydedilemedi.");
+        return ResponseEntity.badRequest().body(responseMap);
     }
 
     public ResponseEntity<?> updateImage(String token, Long imageId, MultipartFile multipartFile) throws IOException {
