@@ -22,4 +22,8 @@ public class ImageController {
     public ResponseEntity<?> addImageUser(@RequestHeader("Authorization") String token, @RequestParam("file")MultipartFile file) throws IOException {
         return imageService.uploadUserImage(token,file);
     }
+    @DeleteMapping("/deleteVenueImages")
+    public ResponseEntity<?> deleteVenueImage(@RequestHeader("Authorization") String token) {
+        return imageService.deleteImage(token);
+    }
 }
