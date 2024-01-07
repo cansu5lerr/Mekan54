@@ -64,7 +64,7 @@ public class FirebaseService {
         return ResponseEntity.badRequest().body("Dosya kaydedilemedi.");
     }
 
-   public ResponseEntity<?> uploadImageVenue (String token,MultipartFile multipartFile) throws IOException {
+  public ResponseEntity<?> uploadImageVenue (String token,MultipartFile multipartFile) throws IOException {
         LOGGER.log(Level.INFO, "uploadImageVenue metodu, token: {0} ile çağrıldı.", token);
 
         User authenticatedUser  = userDetailsService.getAuthenticatedUserFromToken(token);
@@ -73,13 +73,21 @@ public class FirebaseService {
                  authenticatedUser.getVenue().getId() +"-" +authenticatedUser.getVenue().getVenueName()
                  : "";
          LOGGER.log(Level.INFO, "Dosya adı oluşturuluyor: {0}", objectName);
+         String firebaseSdkJsonPath = FIREBASE_SDK_JSON;
 
          FileInputStream serviceAccount = new FileInputStream(FIREBASE_SDK_JSON);
+         LOGGER.info("Firebase SDK JSON dosyası (" + firebaseSdkJsonPath + ") başarıyla okundu.");
+
          File file = convertMultiPartToFile(multipartFile);
          Path filePath = file.toPath();
+         LOGGER.info("Multipart dosyası (" + file.getName() + ") başarıyla dönüştürüldü ve dosya yolu elde edildi: " + filePath);
+
          Storage storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).setProjectId(FIREBASE_PROJECT_ID).build().getService();
+         LOGGER.info("Storage servisi başarıyla oluşturuldu.");
+
          BlobId blobId = BlobId.of(FIREBASE_BUCKET, objectName);
          BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(multipartFile.getContentType()).build();
+         LOGGER.info("BlobId (" + blobId + ") ve BlobInfo başarıyla oluşturuldu.");
 
          storage.create(blobInfo, Files.readAllBytes(filePath));
          String fileUrl = getFileUrl(objectName); // Burada objectName, dosyanın adını temsil eder
