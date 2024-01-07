@@ -1,4 +1,5 @@
 package com.example.mekan54.security.service;
+import com.example.mekan54.model.Image;
 
 import com.example.mekan54.model.User;
 import com.example.mekan54.model.Venue;
