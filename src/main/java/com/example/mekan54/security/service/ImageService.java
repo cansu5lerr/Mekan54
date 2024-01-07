@@ -161,6 +161,7 @@ public class ImageService {
     private String getFileUrl(String objectName) {
         return "https://firebasestorage.googleapis.com/v0/b/" + FIREBASE_BUCKET + "/o/" + objectName + "?alt=media";
     }
+    @Transactional
     public ResponseEntity<?> deleteImage(String token) {
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if (user instanceof User) {
@@ -168,9 +169,12 @@ public class ImageService {
             List<Image> imageVenue = venue.getImages();
             try {
                 for (Image image : imageVenue) {
+                    imageRepository.deleteAllByVenue(venue);
                     imageRepository.delete(image);
                 }
-                venue.setImages(new ArrayList<>());
+
+                List<Image> imageUrl = new ArrayList<>();
+                venue.setImages(imageUrl);
                 venueRepository.save(venue);
                 return ResponseEntity.ok().body("Resimlerin hepsi silindi.");
             } catch (Exception e) {
