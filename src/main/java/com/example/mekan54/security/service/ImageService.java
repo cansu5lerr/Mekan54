@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import jakarta.transaction.Transactional;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,7 +40,8 @@ public class ImageService {
     VenueRepository venueRepository;
   @Autowired
     UserRepository userRepository;
-
+  
+    @Transactional
     private ResponseEntity<?> uploadImage(String token, MultipartFile multipartFile, String objectName) throws IOException {
         User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
         if (authenticatedUser != null) {
@@ -81,7 +83,7 @@ public class ImageService {
             }
             Map<String, String> responseMap = new HashMap<>();
             responseMap.put("message", fileUrl);
-            return ResponseEntity.status(HttpStatus.CREATED).body(fileUrl);
+            return ResponseEntity.ok().body(responseMap);
         }
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put("message",  "Dosya kaydedilemedi.");
