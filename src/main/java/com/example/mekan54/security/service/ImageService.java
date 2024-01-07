@@ -11,13 +11,13 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import jakarta.transaction.Transactional;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,8 +40,7 @@ public class ImageService {
     VenueRepository venueRepository;
   @Autowired
     UserRepository userRepository;
-  
-    @Transactional
+@Transactional
     private ResponseEntity<?> uploadImage(String token, MultipartFile multipartFile, String objectName) throws IOException {
         User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
         if (authenticatedUser != null) {
@@ -83,7 +82,7 @@ public class ImageService {
             }
             Map<String, String> responseMap = new HashMap<>();
             responseMap.put("message", fileUrl);
-            return ResponseEntity.ok().body(responseMap);
+            return ResponseEntity.status(HttpStatus.CREATED).body(fileUrl);
         }
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put("message",  "Dosya kaydedilemedi.");
@@ -161,6 +160,25 @@ public class ImageService {
 
     private String getFileUrl(String objectName) {
         return "https://firebasestorage.googleapis.com/v0/b/" + FIREBASE_BUCKET + "/o/" + objectName + "?alt=media";
+    }
+    public ResponseEntity<?> deleteImage(String token) {
+        User user = userDetailsService.getAuthenticatedUserFromToken(token);
+        if (user instanceof User) {
+            Venue venue = user.getVenue();
+            List<Image> imageVenue = venue.getImages();
+            try {
+                for (Image image : imageVenue) {
+                    imageRepository.delete(image);
+                }
+                venue.setImages(new ArrayList<>());
+                venueRepository.save(venue);
+                return ResponseEntity.ok().body("Resimlerin hepsi silindi.");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Resimleri silme sırasında bir hata oluştu.");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Kullanıcı bulunamadı.");
     }
 
 
