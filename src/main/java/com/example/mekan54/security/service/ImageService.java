@@ -40,6 +40,66 @@ public class ImageService {
     VenueRepository venueRepository;
   @Autowired
     UserRepository userRepository;
+    @Transactional
+    public ResponseEntity<?> uploadImages(String token, List<MultipartFile> multipartFiles, List<String> objectNames) throws IOException {
+        User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
+
+        if (authenticatedUser != null) {
+            if(!authenticatedUser.getVenue().getImages().isEmpty()) {
+                deleteImage(token);
+            }
+            for (int i = 0; i < multipartFiles.size(); i++) {
+                MultipartFile multipartFile = multipartFiles.get(i);
+                String objectName = objectNames.get(i);
+
+                FileInputStream serviceAccount = new FileInputStream(FIREBASE_SDK_JSON);
+                File file = convertMultiPartToFile(multipartFile);
+                Path filePath = file.toPath();
+                Storage storage = StorageOptions.newBuilder()
+                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .setProjectId(FIREBASE_PROJECT_ID)
+                        .build()
+                        .getService();
+                BlobId blobId = BlobId.of(FIREBASE_BUCKET, objectName);
+                BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/png").build();
+                storage.create(blobInfo, Files.readAllBytes(filePath));
+                String fileUrl = getFileUrl(objectName);
+
+                if (objectName.startsWith("user-")) {
+                    Image image = new Image();
+                    image.setImgUrl(fileUrl);
+                    image.setUser(authenticatedUser);
+                    imageRepository.save(image);
+                    authenticatedUser.setProfileImage(image);
+                    userRepository.save(authenticatedUser);
+                } else if (objectName.startsWith("venue-")) {
+                    Venue venue = authenticatedUser.getVenue();
+                    if (venue != null) {
+                        Image image = new Image();
+                        List<Image> existingImages = new ArrayList<>();
+
+
+                            image.setImgUrl(fileUrl);
+                            existingImages.add(image);
+                            venue.setImages(existingImages);
+                            image.setVenue(venue);
+                            imageRepository.save(image);
+                            venueRepository.save(venue);
+
+                    }
+                }
+            }
+
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("message", "Resimler başarıyla yüklendi.");
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseMap);
+        }
+
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("message", "Dosya kaydedilemedi.");
+        return ResponseEntity.badRequest().body(responseMap);
+    }
+
 @Transactional
     private ResponseEntity<?> uploadImage(String token, MultipartFile multipartFile, String objectName) throws IOException {
         User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
@@ -141,9 +201,14 @@ public class ImageService {
         return uploadImage(token, multipartFile, objectName);
     }
 
-    public ResponseEntity<?> uploadVenueImage(String token, MultipartFile multipartFile) throws IOException {
-        String objectName = "venue-" + UUID.randomUUID().toString() + "-" + multipartFile.getOriginalFilename();
-        return uploadImage(token, multipartFile, objectName);
+    public ResponseEntity<?> uploadVenueImage(String token, List<MultipartFile> multipartFiles) throws IOException {
+        List<String> objectNames = new ArrayList<>();
+
+        for (MultipartFile file : multipartFiles) {
+            String objectName = "venue-" + UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+            objectNames.add(objectName);
+        }
+        return uploadImages(token, multipartFiles, objectNames);
     }
 
     private File convertMultiPartToFile(MultipartFile file) throws IOException {
@@ -161,28 +226,27 @@ public class ImageService {
     private String getFileUrl(String objectName) {
         return "https://firebasestorage.googleapis.com/v0/b/" + FIREBASE_BUCKET + "/o/" + objectName + "?alt=media";
     }
-    @Transactional
-    public ResponseEntity<?> deleteImage(String token) {
+@Transactional
+    public boolean  deleteImage(String token) {
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if (user instanceof User) {
             Venue venue = user.getVenue();
             List<Image> imageVenue = venue.getImages();
             try {
                 for (Image image : imageVenue) {
-                    imageRepository.deleteAllByVenue(venue);
                     imageRepository.delete(image);
                 }
-
+                imageRepository.deleteImagesByVenueId(venue.getId());
                 List<Image> imageUrl = new ArrayList<>();
                 venue.setImages(imageUrl);
                 venueRepository.save(venue);
-                return ResponseEntity.ok().body("Resimlerin hepsi silindi.");
+                return true;
             } catch (Exception e) {
                 e.printStackTrace();
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Resimleri silme sırasında bir hata oluştu.");
+                return false;
             }
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Kullanıcı bulunamadı.");
+        return false;
     }
 
 
