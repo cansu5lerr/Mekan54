@@ -39,6 +39,9 @@ public class FirebaseService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ImageRepository imageRepository;
     private static final Logger LOGGER = Logger.getLogger(VenueService.class.getName());
 
 
