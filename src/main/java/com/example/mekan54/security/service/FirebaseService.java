@@ -118,27 +118,40 @@ public class FirebaseService {
                     .build()
                     .getService();
             BlobId blobId = BlobId.of(FIREBASE_BUCKET, objectName);
-            BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
-                    .setContentType(multipartFile.getContentType())
-                    .build();
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/png").build();
             storage.create(blobInfo, Files.readAllBytes(filePath));
             String fileUrl = getFileUrl(objectName);
             if (objectName.startsWith("user-")) {
                 User user = authenticatedUser;
-
+                Image userImg= new Image();
+                userImg.setUser(user);
+                userImg.setImgUrl(fileUrl);
+                imageRepository.save(userImg);
                 userRepository.save(user);
             } else if (objectName.startsWith("venue-")) {
                 Venue venue = authenticatedUser.getVenue();
                 if (venue != null) {
-
+                    Image venueImage = new Image();
+                    venueImage.setImgUrl(fileUrl);
+                    venueImage.setVenue(venue);
+                    List<Image> oldImages = venue.getImages();
+                    oldImages.add(venueImage);
+                    venue.setImages(oldImages);
+                    imageRepository.save(venueImage);
                     venueRepository.save(venue);
                 }
             }
 
-            return ResponseEntity.status(HttpStatus.CREATED).body("Dosya başarıyla yüklendi. Dosya URL: " + fileUrl);
+         // Burada objectName, dosyanın adını temsil eder
+            LOGGER.log(Level.INFO, "Dosya başarıyla yüklendi. Dosya URL: {0}", fileUrl);
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("message", fileUrl);
+            return ResponseEntity.status(HttpStatus.CREATED).body(fileUrl);
         }
 
-        return ResponseEntity.badRequest().body("Dosya kaydedilemedi.");
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("message",  "Dosya kaydedilemedi.");
+        return ResponseEntity.badRequest().body(responseMap);
     }
 
     public ResponseEntity<?> uploadUserImage(String token, MultipartFile multipartFile) throws IOException {
