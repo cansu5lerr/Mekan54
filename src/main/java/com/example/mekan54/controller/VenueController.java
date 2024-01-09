@@ -37,7 +37,7 @@ public class VenueController {
    @PostMapping("/venueName")
     public ResponseEntity<?> getVenueName(@RequestHeader("Authorization") String token ,@RequestBody VenueNameRequest venueNameRequest){
        LOGGER.log(Level.INFO, "Aranan Venue : {0}", venueNameRequest);
-       return venueService.getVenuesByName(token, String.valueOf((venueNameRequest)));
+       return venueService.getVenuesByName(token, venueNameRequest.getVenueName());
     }
   /* @PostMapping("/updateVenue")
     public ResponseEntity<?> updateVenue(@RequestHeader("Authorization") String token , @RequestBody VenueUpdateRequest venueRequest) {
