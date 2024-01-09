@@ -427,14 +427,17 @@ public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueReque
          return ResponseEntity.badRequest().body(responseMap);
      }
  }
-    public ResponseEntity<?> getVenuesByName(String token,String venueName) {
+    public ResponseEntity<?> getVenuesByName(String token, String venueName) {
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if(user instanceof  User) {
         List<Venue> venues = venueRepository.findAllByVenueName(venueName);
+         
 
-        List<VenueResponse> venuesResponseList = new ArrayList<>();
+            List<VenueResponse> venuesResponseList = new ArrayList<>();
 
         for (Venue venue : venues) {
+            LOGGER.log(Level.INFO, "Processing venue: " + venue.getVenueName());
+
             VenueResponse venuesResponse = new VenueResponse();
             venuesResponse.setVenueName(venue.getVenueName());
             venuesResponse.setId(venue.getId());
@@ -476,6 +479,7 @@ public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueReque
 
             venuesResponseList.add(venuesResponse);
         }
+            LOGGER.log(Level.INFO, "Returning response with " + venuesResponseList.size() + " venues");
 
         return ResponseEntity.ok().body(venuesResponseList);
         }
