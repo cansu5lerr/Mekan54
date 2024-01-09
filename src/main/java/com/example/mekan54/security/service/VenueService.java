@@ -431,12 +431,14 @@ public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueReque
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if(user instanceof  User) {
             List<Venue> venues = venueRepository.findAll();
+            VenueNameRequest venueNameRequest = new VenueNameRequest();
+            venueNameRequest.setVenueName(venueName);
             LOGGER.log(Level.INFO, "Processing venue: " + venues.toString());
             List<VenueResponse> venuesResponseList = new ArrayList<>();
         for (Venue venue : venues) {
             LOGGER.log(Level.INFO, "Processing venue: " + venue.getVenueName());
-            LOGGER.log(Level.INFO, "Aranan Venue : {0}", venueName);
-           if (venueName.trim().equalsIgnoreCase(venue.getVenueName().trim())){
+        
+            if(venueNameRequest.equals(venue.getVenueName())) {
                 LOGGER.log(Level.INFO, "Processing venue: " + venue.getVenueName());
                 VenueResponse venuesResponse = new VenueResponse();
                 venuesResponse.setVenueName(venue.getVenueName());
@@ -480,7 +482,7 @@ public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueReque
                 venuesResponseList.add(venuesResponse);
             }
         }
-            
+
             LOGGER.log(Level.INFO, "Returning response with " + venuesResponseList.size() + " venues");
 
         return ResponseEntity.ok().body(venuesResponseList);
