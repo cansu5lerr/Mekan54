@@ -1,10 +1,7 @@
 package com.example.mekan54.security.service;
 
-import com.example.mekan54.model.Favorite;
-import com.example.mekan54.model.User;
-import com.example.mekan54.model.Image;
+import com.example.mekan54.model.*;
 
-import com.example.mekan54.model.Venue;
 import com.example.mekan54.repository.UserRepository;
 import com.example.mekan54.security.jwt.EmailPasswordAuthenticationToken;
 import com.example.mekan54.security.jwt.JwtUtils;
@@ -50,11 +47,28 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 VenueResponse venueResponse = new VenueResponse();
                 venueResponse.setVenueName(Objects.toString(venue.getVenueName(), "null"));
                 venueResponse.setCategoryName(Objects.toString(venue.getCategory().getCategoryName(), "null"));
+                venueResponse.setFavoriteSize(venue.getFavorites().size());
+                venueResponse.setId(venue.getId());
                 List<Image> imageList = venue.getImages();
                 List<String> imgList = new ArrayList<>();
                 for (Image image : imageList) {
                     imgList.add(image.getImgUrl());
                 }
+                List<Map<String, String>> commentsResponseList = new ArrayList<>();
+                for (Comment comment : venue.getComments()) {
+                    Map<String, String> commentMap = new HashMap<>();
+                    commentMap.put("name", comment.getUser().getName());
+                    commentMap.put("surname", comment.getUser().getSurname());
+                    commentMap.put("comment", comment.getContent());
+                    String imgUrl = (comment.getUser() != null && comment.getUser().getProfileImage() != null)
+                            ? comment.getUser().getProfileImage().getImgUrl()
+                            : null;
+
+                    commentMap.put("imgUrl", imgUrl);
+                    commentMap.put("id", comment.getId().toString());
+                    commentsResponseList.add(commentMap);
+                }
+                venueResponse.setComments(commentsResponseList);
                 Map<String, String> aboutMap = new HashMap<>();
                 aboutMap.put("workingHour", Objects.toString(venue.getWorkingHour(), "null"));
                 aboutMap.put("phoneNumber", Objects.toString(venue.getPhoneNumber(), "null"));
@@ -69,7 +83,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             userDetailsResponse.setEmail(authenticatedUser.getEmail());
             userDetailsResponse.setName(authenticatedUser.getName());
             userDetailsResponse.setSurname(authenticatedUser.getSurname());
-
+            userDetailsResponse.setImgUrl(authenticatedUser.getProfileImage().getImgUrl());
             return ResponseEntity.ok().body(userDetailsResponse);
         }
 
