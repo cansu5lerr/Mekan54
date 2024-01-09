@@ -4,8 +4,8 @@ import java.util.logging.Logger;
 import com.example.mekan54.model.*;
 import com.example.mekan54.payload.request.CategoryNameRequest;
 import com.example.mekan54.payload.request.RegisterAdminRequest;
-import com.example.mekan54.payload.request.VenueUpdateRequest;
 import com.example.mekan54.payload.request.VenueNameRequest;
+import com.example.mekan54.payload.request.VenueUpdateRequest;
 import com.example.mekan54.payload.response.VenueUpdateResponse;
 import com.example.mekan54.payload.response.VenueResponse;
 import com.example.mekan54.repository.CategoryRepository;
@@ -344,7 +344,8 @@ public class VenueService {
  }
 
   */
-public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueRequest) {
+
+ public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueRequest) {
      LOGGER.log(Level.INFO, "updateVenue method called with token: {0}", token);
 
      User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
@@ -432,7 +433,7 @@ public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueReque
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if(user instanceof  User) {
 
-            List<Venue> venues = venueRepository.findAll();
+            List<Venue> venues = venueRepository.findAllByVenueName(venueName);
             LOGGER.log(Level.INFO, "Processing venue: " + venues.toString());
 
             List<VenueResponse> venuesResponseList = new ArrayList<>();
@@ -594,7 +595,7 @@ public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueReque
             return ResponseEntity.ok().body(venueResponse);
         }
          Map<String, String> responseMap = new HashMap<>();
-         responseMap.put("message", "Kullanıcı girişi başarısız.");
+         responseMap.put("message", "Kullanıcı başarılı bir şekilde kaydedildi.");
          return ResponseEntity.badRequest().body(responseMap);
      }
 
