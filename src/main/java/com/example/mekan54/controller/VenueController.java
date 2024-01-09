@@ -35,11 +35,11 @@ public class VenueController {
         return venueService.getVenuesWithCategories(token,categoryNameRequest);
    }
    @PostMapping("/venueName")
-    public ResponseEntity<?> getVenueName(@RequestHeader("Authorization") String token ,@RequestBody VenueNameRequest venueNameResquest){
-               LOGGER.log(Level.INFO, "Aranan Venue : {0}", venueNameResquest.getVenueName());
+    public ResponseEntity<?> getVenueName(@RequestHeader("Authorization") String token ,@RequestBody String venueName){
+       LOGGER.log(Level.INFO, "Aranan Venue : {0}", venueName);
+       return venueService.getVenuesByName(token,venueName);
 
-        return venueService.getVenuesByName(token,venueNameResquest.getVenueName());
-   }
+    }
   /* @PostMapping("/updateVenue")
     public ResponseEntity<?> updateVenue(@RequestHeader("Authorization") String token , @RequestBody VenueUpdateRequest venueRequest) {
        LOGGER.log(Level.INFO, "updateVenue API called with token: {0}", token);
