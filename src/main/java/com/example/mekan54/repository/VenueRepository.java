@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface VenueRepository extends JpaRepository<Venue, Long> {
 
-  
+    List<Venue> findAllByVenueName(String venueName);
+
+
 
 }
