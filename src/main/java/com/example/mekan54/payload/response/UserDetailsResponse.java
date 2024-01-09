@@ -26,15 +26,15 @@ public class UserDetailsResponse {
     private String surname;
 
 
-    public List<Map<String, Object>> getVenuesResponseList() {
-        return venuesResponseList;
+    public List<Map<String, Object>> getFavoriteVenueList() {
+        return favoriteVenueList;
     }
 
-    public void setVenuesResponseList(List<Map<String, Object>> venuesResponseList) {
-        this.venuesResponseList = venuesResponseList;
+    public void setFavoriteVenueList(List<Map<String, Object>> favoriteVenueList) {
+        this.favoriteVenueList = favoriteVenueList;
     }
 
-    private  List<Map<String, Object>> venuesResponseList;
+    private  List<Map<String, Object>> favoriteVenueList;
 
 
     public UserDetailsResponse() {}
