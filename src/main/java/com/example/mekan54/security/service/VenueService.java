@@ -427,59 +427,58 @@ public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueReque
          return ResponseEntity.badRequest().body(responseMap);
      }
  }
-    public ResponseEntity<?> getVenuesByName(String token, String venueName) {
+  public ResponseEntity<?> getVenuesByName(String token, String venueName) {
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if(user instanceof  User) {
-          List<Venue> venues = venueRepository.findAll();
-         LOGGER.log(Level.INFO, "Processing venue: " + venues.toString());
-
-
+            List<Venue> venues = venueRepository.findAll();
+            LOGGER.log(Level.INFO, "Processing venue: " + venues.toString());
             List<VenueResponse> venuesResponseList = new ArrayList<>();
-
         for (Venue venue : venues) {
-            LOGGER.log(Level.INFO, "Processing venue: " + venue.getVenueName());
-
-            VenueResponse venuesResponse = new VenueResponse();
-            venuesResponse.setVenueName(venue.getVenueName());
-            venuesResponse.setId(venue.getId());
-            List<String> imageUrls = new ArrayList<>();
-            List<Image> images = venue.getImages();
-            if (images != null && !images.isEmpty()) {
-                for (Image image : images) {
-                    imageUrls.add(image.getImgUrl());
+            if(venue.getVenueName().equals(venueName)) {
+                LOGGER.log(Level.INFO, "Processing venue: " + venue.getVenueName());
+                VenueResponse venuesResponse = new VenueResponse();
+                venuesResponse.setVenueName(venue.getVenueName());
+                venuesResponse.setId(venue.getId());
+                List<String> imageUrls = new ArrayList<>();
+                List<Image> images = venue.getImages();
+                if (images != null && !images.isEmpty()) {
+                    for (Image image : images) {
+                        imageUrls.add(image.getImgUrl());
+                    }
                 }
+                venuesResponse.setImgUrl(imageUrls);
+
+                venuesResponse.setAdress(venue.getAdress());
+                venuesResponse.setCategoryName(venue.getCategory().getCategoryName());
+                venuesResponse.setFavoriteSize(venue.getFavorites().size());
+
+                List<Map<String, String>> commentsResponseList = new ArrayList<>();
+                for (Comment comment : venue.getComments()) {
+                    Map<String, String> commentMap = new HashMap<>();
+                    commentMap.put("name", comment.getUser().getName());
+                    commentMap.put("surname", comment.getUser().getSurname());
+                    commentMap.put("comment", comment.getContent());
+                    String imgUrl = (comment.getUser() != null && comment.getUser().getProfileImage() != null)
+                            ? comment.getUser().getProfileImage().getImgUrl()
+                            : null;
+
+                    commentMap.put("imgUrl", imgUrl);
+                    commentMap.put("id", comment.getId().toString());
+                    commentsResponseList.add(commentMap);
+                }
+
+                Map<String, String> aboutMap = new HashMap<>();
+                aboutMap.put("workingHour", venue.getWorkingHour());
+                aboutMap.put("phoneNumber", venue.getPhoneNumber());
+                aboutMap.put("address", venue.getAdress());
+                aboutMap.put("webSite", venue.getWebsite());
+                venuesResponse.setAbout(aboutMap);
+                venuesResponse.setComments(commentsResponseList);
+
+                venuesResponseList.add(venuesResponse);
             }
-            venuesResponse.setImgUrl(imageUrls);
-
-            venuesResponse.setAdress(venue.getAdress());
-            venuesResponse.setCategoryName(venue.getCategory().getCategoryName());
-            venuesResponse.setFavoriteSize(venue.getFavorites().size());
-
-            List<Map<String, String>> commentsResponseList = new ArrayList<>();
-            for (Comment comment : venue.getComments()) {
-                Map<String, String> commentMap = new HashMap<>();
-                commentMap.put("name", comment.getUser().getName());
-                commentMap.put("surname", comment.getUser().getSurname());
-                commentMap.put("comment", comment.getContent());
-                String imgUrl = (comment.getUser() != null && comment.getUser().getProfileImage() != null)
-                        ? comment.getUser().getProfileImage().getImgUrl()
-                        : null;
-
-                commentMap.put("imgUrl", imgUrl);
-                commentMap.put("id", comment.getId().toString());
-                commentsResponseList.add(commentMap);
-            }
-
-            Map<String, String> aboutMap = new HashMap<>();
-            aboutMap.put("workingHour", venue.getWorkingHour());
-            aboutMap.put("phoneNumber", venue.getPhoneNumber());
-            aboutMap.put("address", venue.getAdress());
-            aboutMap.put("webSite", venue.getWebsite());
-            venuesResponse.setAbout(aboutMap);
-            venuesResponse.setComments(commentsResponseList);
-
-            venuesResponseList.add(venuesResponse);
         }
+            
             LOGGER.log(Level.INFO, "Returning response with " + venuesResponseList.size() + " venues");
 
         return ResponseEntity.ok().body(venuesResponseList);
