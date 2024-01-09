@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.mekan54.payload.response.UserDetailsResponse;
+import com.example.mekan54.payload.response.VenueResponse;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,40 +38,46 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return UserDetailsImpl.build(user);
     }
 
-    public ResponseEntity<?> getUserProfile (String token) {
+    public ResponseEntity<?> getUserProfile(String token) {
         User authenticatedUser = getAuthenticatedUserFromToken(token);
         UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
+
         if (authenticatedUser instanceof User) {
-            List<Favorite> FavoriteList = authenticatedUser.getFavorites();
-            List<Map<String, Object>> favoriteVenueList = new ArrayList<>();
-            List<List<String>> imageUrlList = new ArrayList<>();
-            for (Favorite favorite : FavoriteList) {
+            List<Favorite> favoriteList = authenticatedUser.getFavorites();
+            List<VenueResponse> favoriteVenueList = new ArrayList<>();
+            for (Favorite favorite : favoriteList) {
                 Venue venue = favorite.getVenue();
-                Map<String, Object> venueList = new HashMap<>();
-                venueList.put("name", Objects.toString(venue.getVenueName(), "null"));
-                venueList.put("category", Objects.toString(venue.getCategory().getCategoryName(), "null"));
-                venueList.put("address", Objects.toString(venue.getAdress(), "null"));
-                venueList.put("website", Objects.toString(venue.getWebsite(), "null"));
-                venueList.put("workingHour", Objects.toString(venue.getWorkingHour(), "null"));
+                VenueResponse venueResponse = new VenueResponse();
+                venueResponse.setVenueName(Objects.toString(venue.getVenueName(), "null"));
+                venueResponse.setCategoryName(Objects.toString(venue.getCategory().getCategoryName(), "null"));
                 List<Image> imageList = venue.getImages();
                 List<String> imgList = new ArrayList<>();
-               for(Image image : imageList) {
-                   imgList.add(image.getImgUrl());
-               }
-                venueList.put("imageUrl", imgList);
-                imageUrlList.add(imgList);
-                favoriteVenueList.add(venueList);
+                for (Image image : imageList) {
+                    imgList.add(image.getImgUrl());
+                }
+                Map<String, String> aboutMap = new HashMap<>();
+                aboutMap.put("workingHour", Objects.toString(venue.getWorkingHour(), "null"));
+                aboutMap.put("phoneNumber", Objects.toString(venue.getPhoneNumber(), "null"));
+                aboutMap.put("address", Objects.toString(venue.getAdress(), "null"));
+                aboutMap.put("webSite", Objects.toString(venue.getWebsite(), "null"));
+                venueResponse.setAbout(aboutMap);
+                venueResponse.setImgUrl(imgList);
+                favoriteVenueList.add(venueResponse);
             }
+
             userDetailsResponse.setFavoriteVenueList(favoriteVenueList);
             userDetailsResponse.setEmail(authenticatedUser.getEmail());
             userDetailsResponse.setName(authenticatedUser.getName());
             userDetailsResponse.setSurname(authenticatedUser.getSurname());
+
             return ResponseEntity.ok().body(userDetailsResponse);
         }
-        Map<String , String> responseMap = new HashMap<>();
+
+        Map<String, String> responseMap = new HashMap<>();
         responseMap.put("message", "Kullanıcı bulunamadı.");
         return ResponseEntity.badRequest().body(responseMap);
     }
+
 
     //User güncellemesi
    /* public UserDetailsResponse updateUserProfile(String token , UserDetailsResponse userDetailsResponse) {
