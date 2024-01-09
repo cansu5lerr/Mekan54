@@ -42,7 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
         if (authenticatedUser instanceof User) {
             List<Favorite> FavoriteList = authenticatedUser.getFavorites();
-            List<Map<String, Object>> venuesResponseList = new ArrayList<>();
+            List<Map<String, Object>> favoriteVenueList = new ArrayList<>();
             List<List<String>> imageUrlList = new ArrayList<>();
             for (Favorite favorite : FavoriteList) {
                 Venue venue = favorite.getVenue();
@@ -59,9 +59,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                }
                 venueList.put("imageUrl", imgList);
                 imageUrlList.add(imgList);
-                venuesResponseList.add(venueList);
+                favoriteVenueList.add(venueList);
             }
-            userDetailsResponse.setVenuesResponseList(venuesResponseList);
+            userDetailsResponse.setFavoriteVenueList(favoriteVenueList);
             userDetailsResponse.setEmail(authenticatedUser.getEmail());
             userDetailsResponse.setName(authenticatedUser.getName());
             userDetailsResponse.setSurname(authenticatedUser.getSurname());
