@@ -1,8 +1,12 @@
 package com.example.mekan54.payload.response;
 
+import com.example.mekan54.model.Venue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
+import java.util.Map;
 
 public class UserDetailsResponse {
 
@@ -21,12 +25,26 @@ public class UserDetailsResponse {
     @Size(min = 3, max = 20)
     private String surname;
 
-    public UserDetailsResponse (String name, String surname, String email) {
-        this.name = name;
-        this.surname = surname;
-        this.email= email;
+
+    public List<Map<String, Object>> getVenuesResponseList() {
+        return venuesResponseList;
     }
 
+    public void setVenuesResponseList(List<Map<String, Object>> venuesResponseList) {
+        this.venuesResponseList = venuesResponseList;
+    }
+
+    private  List<Map<String, Object>> venuesResponseList;
+
+
+    public UserDetailsResponse() {}
+
+
+    public UserDetailsResponse (String name, String surname, String email) {
+        this.name = name;
+        this.surname= surname;
+        this.email=email;
+    }
     public String getName() {
         return name;
     }
