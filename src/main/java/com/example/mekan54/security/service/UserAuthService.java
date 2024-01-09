@@ -205,8 +205,11 @@ public class UserAuthService implements UserDetailsService {
               user.setSurname(userUpdateRequest.getSurname());
           }
           userRepository.save(user);
+
         }
-        return ResponseEntity.ok().body(new UserDetailsResponse (user.getName(),user.getSurname(),user.getEmail()));
+        Map<String, String> messageResponse = new HashMap<>();
+        messageResponse.put("message", "Kullanıcı güncellendi");
+        return ResponseEntity.ok().body(messageResponse);
 
     }
 
