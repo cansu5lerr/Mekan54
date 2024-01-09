@@ -5,6 +5,7 @@ import com.example.mekan54.model.*;
 import com.example.mekan54.payload.request.CategoryNameRequest;
 import com.example.mekan54.payload.request.RegisterAdminRequest;
 import com.example.mekan54.payload.request.VenueUpdateRequest;
+import com.example.mekan54.payload.request.VenueNameRequest;
 import com.example.mekan54.payload.response.VenueUpdateResponse;
 import com.example.mekan54.payload.response.VenueResponse;
 import com.example.mekan54.repository.CategoryRepository;
