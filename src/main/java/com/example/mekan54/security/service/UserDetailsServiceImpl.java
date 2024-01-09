@@ -82,12 +82,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 venueResponse.setImgUrl(imgList);
                 favoriteVenueList.add(venueResponse);
             }
-
             userDetailsResponse.setFavoriteVenueList(favoriteVenueList);
             userDetailsResponse.setEmail(authenticatedUser.getEmail());
             userDetailsResponse.setName(authenticatedUser.getName());
             userDetailsResponse.setSurname(authenticatedUser.getSurname());
-            userDetailsResponse.setImgUrl(authenticatedUser.getProfileImage().getImgUrl());
+            if (authenticatedUser.getProfileImage() != null) {
+                userDetailsResponse.setImgUrl(authenticatedUser.getProfileImage().getImgUrl());
+            } else {
+                userDetailsResponse.setImgUrl(null);
+            }
             return ResponseEntity.ok().body(userDetailsResponse);
         }
 
