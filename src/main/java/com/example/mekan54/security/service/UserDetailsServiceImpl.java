@@ -18,6 +18,8 @@ import com.example.mekan54.payload.response.UserDetailsResponse;
 import com.example.mekan54.payload.response.VenueResponse;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     UserRepository userRepository;
     @Autowired
     private JwtUtils jwtUtils;
+    private static final Logger LOGGER = Logger.getLogger(VenueService.class.getName());
 
     @Override
     @Transactional
@@ -47,6 +50,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 VenueResponse venueResponse = new VenueResponse();
                 venueResponse.setVenueName(Objects.toString(venue.getVenueName(), "null"));
                 venueResponse.setCategoryName(Objects.toString(venue.getCategory().getCategoryName(), "null"));
+                LOGGER.log(Level.INFO, " venueFavorites: " + venue.getFavorites().size());
                 venueResponse.setFavoriteSize(venue.getFavorites().size());
                 venueResponse.setId(venue.getId());
                 List<Image> imageList = venue.getImages();
