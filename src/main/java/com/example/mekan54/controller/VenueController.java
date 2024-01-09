@@ -35,10 +35,9 @@ public class VenueController {
         return venueService.getVenuesWithCategories(token,categoryNameRequest);
    }
    @PostMapping("/venueName")
-    public ResponseEntity<?> getVenueName(@RequestHeader("Authorization") String token ,@RequestBody String venueName){
-       LOGGER.log(Level.INFO, "Aranan Venue : {0}", venueName);
-       return venueService.getVenuesByName(token,venueName);
-
+    public ResponseEntity<?> getVenueName(@RequestHeader("Authorization") String token ,@RequestBody VenueNameRequest venueNameRequest){
+       LOGGER.log(Level.INFO, "Aranan Venue : {0}", venueNameRequest);
+       return venueService.getVenuesByName(token, String.valueOf((venueNameRequest)));
     }
   /* @PostMapping("/updateVenue")
     public ResponseEntity<?> updateVenue(@RequestHeader("Authorization") String token , @RequestBody VenueUpdateRequest venueRequest) {
@@ -50,6 +49,29 @@ public class VenueController {
        LOGGER.log(Level.INFO, "updateVenue API response: {0}", responseEntity.getBody());
        return responseEntity;
    }  */
+  /*@PostMapping("/updateVenue")
+  public ResponseEntity<?> updateVenue(@RequestHeader("Authorization") String token, @RequestBody VenueUpdateRequest venueRequest) {
+      if(token != null) {
+          Map<String, String> responseMapp = new HashMap<>();
+          responseMapp.put("message", token);
+          return  ResponseEntity.ok().body(responseMapp);
+      }
+      if (venueRequest == null || isAnyFieldEmpty(venueRequest)) {
+          Map<String, String> errorMap = new HashMap<>();
+          errorMap.put("message", "Venue güncelleme isteği boş olamaz.");
+          return ResponseEntity.badRequest().body(errorMap);
+      }
+
+      ResponseEntity<?> responseEntity = venueService.updateVenue(token, venueRequest);
+
+      if (responseEntity == null) {
+          Map<String, String> errorMap = new HashMap<>();
+          errorMap.put("message", "Güncelleme işlemi sırasında bir hata oluştu.");
+          return ResponseEntity.badRequest().body(errorMap);
+      } else {
+          return responseEntity;
+      }
+  } */
   @PostMapping("/updateVenue")
   public ResponseEntity<?> updateVenue(@RequestHeader("Authorization") String token, @RequestBody VenueUpdateRequest venueRequest) {
    return venueService.updateVenue(token,venueRequest);
