@@ -438,7 +438,7 @@ public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueReque
             List<VenueResponse> venuesResponseList = new ArrayList<>();
         for (Venue venue : venues) {
             String venueNameRequest = venue.getVenueName();
-            LOGGER.log(Level.INFO, " venue: " +venueName);
+            LOGGER.log(Level.INFO, " venueName: " +venueName);
             LOGGER.log(Level.INFO, " venue: " +venueNameRequest);
             if (venueName.equalsIgnoreCase(venueNameRequest)) {
                 VenueResponse venuesResponse = new VenueResponse();
