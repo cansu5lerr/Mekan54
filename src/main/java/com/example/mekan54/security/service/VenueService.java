@@ -432,7 +432,7 @@ public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueReque
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if(user instanceof  User) {
             List<Venue> venues = venueRepository.findAll();
-            VenueNameRequest venueNameRequest = new VenueNameRequest();
+            VenueNameRequest request = new VenueNameRequest();
             venueNameRequest.setVenueName(venueName);
             LOGGER.log(Level.INFO, "Processing venue: " + venues.toString());
             List<VenueResponse> venuesResponseList = new ArrayList<>();
