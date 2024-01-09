@@ -8,10 +8,6 @@ public class VenueNameRequest {
     public String getVenueName() {
         return venueName;
     }
-   @JsonCreator
-    public VenueNameRequest(@JsonProperty("venueName") String venueName) {
-        this.venueName = venueName;
-    }
     public void setVenueName(String venueName) {
         this.venueName = venueName;
     }
