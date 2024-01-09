@@ -25,7 +25,15 @@ public class UserDetailsResponse {
     @Size(min = 3, max = 20)
     private String surname;
 
+    public String getImgUrl() {
+        return imgUrl;
+    }
 
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    private String imgUrl;
     public List<VenueResponse> getFavoriteVenueList() {
         return favoriteVenueList;
     }
