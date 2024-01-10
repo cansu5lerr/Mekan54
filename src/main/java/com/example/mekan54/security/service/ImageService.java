@@ -102,7 +102,9 @@ public class ImageService {
     private ResponseEntity<?> uploadImage(String token, MultipartFile multipartFile, String objectName) throws IOException {
         User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
         if (authenticatedUser != null) {
+
             if((authenticatedUser.getProfileImage()) != null) {
+
                 deleteImageUser(token);
             }
             FileInputStream serviceAccount = new FileInputStream(FIREBASE_SDK_JSON);
@@ -254,7 +256,7 @@ public class ImageService {
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if(user instanceof User) {
             imageRepository.delete(user.getProfileImage());
-            imageRepository.deleteImagesByVenueId(user.getId());
+            imageRepository.deleteImagesByUserId(user.getId());
             userRepository.save(user);
             return true;
         }
