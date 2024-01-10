@@ -16,4 +16,9 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     @Query("DELETE FROM Image i WHERE i.venue.id = :venueId")
     void deleteImagesByVenueId(@Param("venueId") Long venueId);
 
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Image i WHERE i.user.id = :userId")
+    void deleteImagesByUserId(@Param("userId") Long userId);
+
 }
