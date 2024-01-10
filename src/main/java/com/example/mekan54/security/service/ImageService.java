@@ -77,8 +77,6 @@ public class ImageService {
                     if (venue != null) {
                         Image image = new Image();
                         List<Image> existingImages = new ArrayList<>();
-
-
                             image.setImgUrl(fileUrl);
                             existingImages.add(image);
                             venue.setImages(existingImages);
@@ -104,6 +102,9 @@ public class ImageService {
     private ResponseEntity<?> uploadImage(String token, MultipartFile multipartFile, String objectName) throws IOException {
         User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
         if (authenticatedUser != null) {
+            if((authenticatedUser.getProfileImage()) != null) {
+                deleteImageUser(token);
+            }
             FileInputStream serviceAccount = new FileInputStream(FIREBASE_SDK_JSON);
             File file = convertMultiPartToFile(multipartFile);
             Path filePath = file.toPath();
@@ -245,6 +246,17 @@ public class ImageService {
                 e.printStackTrace();
                 return false;
             }
+        }
+        return false;
+    }
+
+    public boolean deleteImageUser(String token) {
+        User user = userDetailsService.getAuthenticatedUserFromToken(token);
+        if(user instanceof User) {
+            imageRepository.delete(user.getProfileImage());
+            imageRepository.deleteImagesByVenueId(user.getId());
+            userRepository.save(user);
+            return true;
         }
         return false;
     }
