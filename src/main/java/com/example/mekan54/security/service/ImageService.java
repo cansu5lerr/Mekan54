@@ -144,8 +144,8 @@ public class ImageService {
                 }
             }
             Map<String, String> responseMap = new HashMap<>();
-            responseMap.put("message", fileUrl);
-            return ResponseEntity.status(HttpStatus.CREATED).body(fileUrl);
+            responseMap.put("message", "Dosya kaydedildi");
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseMap);
         }
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put("message",  "Dosya kaydedilemedi.");
