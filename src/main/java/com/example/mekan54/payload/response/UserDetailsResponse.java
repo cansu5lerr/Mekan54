@@ -25,6 +25,15 @@ public class UserDetailsResponse {
     @Size(min = 3, max = 20)
     private String surname;
 
+    public List<Map<String, String>> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Map<String, String>> commentList) {
+        this.commentList = commentList;
+    }
+
+    private List<Map<String, String>> commentList;
     public String getImgUrl() {
         return imgUrl;
     }
