@@ -82,10 +82,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 venueResponse.setImgUrl(imgList);
                 favoriteVenueList.add(venueResponse);
             }
+            List<Comment> commentLists = authenticatedUser.getComments();
+            List<Map<String,String>> commentList = new ArrayList<>();
+            for(Comment comment: commentLists) {
+                Map<String,String> commentMap = new HashMap<>();
+                commentMap.put("id", comment.getId().toString());
+                commentMap.put("content", comment.getContent());
+                commentMap.put("userImgUrl", authenticatedUser.getProfileImage().getImgUrl());
+                commentMap.put("venueName", comment.getVenue().getVenueName());
+                commentList.add(commentMap);
+            }
             userDetailsResponse.setFavoriteVenueList(favoriteVenueList);
             userDetailsResponse.setEmail(authenticatedUser.getEmail());
             userDetailsResponse.setName(authenticatedUser.getName());
             userDetailsResponse.setSurname(authenticatedUser.getSurname());
+            userDetailsResponse.setCommentList(commentList);
             if (authenticatedUser.getProfileImage() != null) {
                 userDetailsResponse.setImgUrl(authenticatedUser.getProfileImage().getImgUrl());
             } else {
