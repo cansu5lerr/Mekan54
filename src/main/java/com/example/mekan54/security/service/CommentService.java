@@ -29,10 +29,12 @@ public class CommentService {
     UserRepository userRepository;
   public ResponseEntity<?> addComment(String token, Long venueId, CommentRequest commentRequest) {
       User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
+      Map<String, String> messageResponse = new HashMap<>();
       if (authenticatedUser instanceof User) {
           Optional<Venue> venueOptional = venueRepository.findById(venueId);
+       
           if(commentRequest.getComment().isEmpty()){
-              Map<String, String> messageResponse = new HashMap<>();
+             
               messageResponse.put("error","Yorum yapılamadı.");
               return ResponseEntity.badRequest().body(messageResponse);
           }
@@ -49,14 +51,17 @@ public class CommentService {
               venueRepository.save(venue);
               return ResponseEntity.ok().body(commentResponse);
           } else {
-              return ResponseEntity.ok().body("Yorum eklenemedi");
+              messageResponse.put("error","Yorum yapılamadı.");
+              return ResponseEntity.ok().body(messageResponse);
           }
       }
-      return ResponseEntity.ok().body("Kullanıcı bulunamadı");
+      messageResponse.put("error","Kullanıcı bulunamadı");
+      return ResponseEntity.ok().body(messageResponse);
   }
 
   public ResponseEntity <?> deleteComment(String token, Long venueId, Long commentId) {
       User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
+      Map<String, String> messageResponse = new HashMap<>();
       if(authenticatedUser instanceof  User) {
           Optional <Venue> venueOptional = venueRepository.findById(venueId);
      if(venueOptional.isPresent()) {
@@ -67,13 +72,17 @@ public class CommentService {
             venue.getComments().remove(comment);
             authenticatedUser.getComments().remove(comment);
             deleteComment(authenticatedUser,venue,comment);
-            return ResponseEntity.ok().body("Yorum kaldırıldı.");
+            messageResponse.put("error","Yorum kaldırıldı.");
+            return ResponseEntity.ok().body(messageResponse);
         }
-        return ResponseEntity.badRequest().body("Yorum kaldırılamadı. ");
+         messageResponse.put("error","Yorum kaldırılamadı.");
+        return ResponseEntity.badRequest().body(messageResponse);
      }
-     return ResponseEntity.badRequest().body("Mekan bulunamadı");
+          messageResponse.put("error","Mekan bulunamadı");
+     return ResponseEntity.badRequest().body(messageResponse);
       }
-      return ResponseEntity.badRequest().body("Kullanıcı bulunamadı.");
+      messageResponse.put("error","Kullanıcı bulunamadı.");
+      return ResponseEntity.badRequest().body(messageResponse);
   }
     @Transactional
     private void deleteComment (User user, Venue venue, Comment comment) {
