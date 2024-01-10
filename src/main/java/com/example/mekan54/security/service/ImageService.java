@@ -40,8 +40,7 @@ public class ImageService {
     VenueRepository venueRepository;
   @Autowired
     UserRepository userRepository;
-    @Value("${spring.servlet.multipart.max-request-size}") // application.properties veya application.yml'den okunan max dosya boyutu
-    private long maxFileSize;
+
     @Transactional
     public ResponseEntity<?> uploadImages(String token, List<MultipartFile> multipartFiles, List<String> objectNames) throws IOException {
         User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
@@ -53,11 +52,7 @@ public class ImageService {
             for (int i = 0; i < multipartFiles.size(); i++) {
                 MultipartFile multipartFile = multipartFiles.get(i);
                 String objectName = objectNames.get(i);
-                if (multipartFile.getSize() > maxFileSize) {
-                    Map<String, String> responseMap = new HashMap<>();
-                    responseMap.put("message", "Dosya boyutu sınırları aşıyor.");
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMap);
-                }
+     
                 FileInputStream serviceAccount = new FileInputStream(FIREBASE_SDK_JSON);
                 File file = convertMultiPartToFile(multipartFile);
                 Path filePath = file.toPath();
@@ -113,12 +108,7 @@ public class ImageService {
 
                 deleteImageUser(token);
             }
-
-            if (multipartFile.getSize() > maxFileSize) {
-                Map<String, String> responseMap = new HashMap<>();
-                responseMap.put("message", "Dosya boyutu sınırları aşıyor.");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMap);
-            }
+            
             FileInputStream serviceAccount = new FileInputStream(FIREBASE_SDK_JSON);
             File file = convertMultiPartToFile(multipartFile);
             Path filePath = file.toPath();
