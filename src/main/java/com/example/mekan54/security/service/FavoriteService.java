@@ -8,11 +8,11 @@ import com.example.mekan54.repository.UserRepository;
 import com.example.mekan54.repository.VenueRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 @Service
 public class FavoriteService {
@@ -37,11 +37,17 @@ public class FavoriteService {
                 venue.setFavorites(favoriteList);
                 authenticatedUser.setFavorites(favoriteList);
                 saveUserFavoriteAndVenue(authenticatedUser,favorite,venue);
-                return ResponseEntity.ok().body("Favorilere eklendi!");
+                Map<String, String> responseMap = new HashMap<>();
+                responseMap.put("message", "Favorilere eklendi!");
+                return ResponseEntity.status(HttpStatus.CREATED).body(responseMap);
             }
-            return ResponseEntity.badRequest().body("Favoriye eklenemedi.");
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("error", "Favorilere eklenemedi!");
+            return ResponseEntity.badRequest().body(responseMap);
         }
-        return ResponseEntity.badRequest().body("Kullanıcı bulunamadı.");
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("error", "Kullanıcı bulunamadı");
+        return ResponseEntity.badRequest().body(responseMap);
     }
     public ResponseEntity<?> deleteFavorite(String token, Long venueId) {
         User authenticatedUser =userDetailsService.getAuthenticatedUserFromToken(token);
@@ -55,13 +61,21 @@ public class FavoriteService {
                    venue.getFavorites().remove(favorite);
                    authenticatedUser.getFavorites().remove(favorite);
                    deleteFavorite(authenticatedUser, venue,favorite);
-               return ResponseEntity.ok().body("Favorilerden kaldırıldı");
+                   Map<String, String> responseMap = new HashMap<>();
+                   responseMap.put("message", "Favorilerden kaldırıldı!");
+                   return ResponseEntity.status(HttpStatus.CREATED).body(responseMap);
                }
-              return ResponseEntity.badRequest().body("Favori kaldırılamadı.");
+                Map<String, String> responseMap = new HashMap<>();
+                responseMap.put("error", "Favorilerden kaldırlamadı!");
+                return ResponseEntity.badRequest().body(responseMap);
             }
-         return ResponseEntity .badRequest().body("Mekan bulunamadı.");
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("error", "Mekan bulunamadı!");
+            return ResponseEntity.badRequest().body(responseMap);
         }
-        return ResponseEntity.badRequest().body("Başarısız kullanıcı girişi.");
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("error", "Mekan bulunamadı!");
+        return ResponseEntity.badRequest().body(responseMap);
     }
     @Transactional
     private void deleteFavorite (User user, Venue venue, Favorite favorite) {
