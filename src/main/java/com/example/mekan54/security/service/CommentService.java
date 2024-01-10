@@ -32,9 +32,9 @@ public class CommentService {
       Map<String, String> messageResponse = new HashMap<>();
       if (authenticatedUser instanceof User) {
           Optional<Venue> venueOptional = venueRepository.findById(venueId);
-       
+
           if(commentRequest.getComment().isEmpty()){
-             
+
               messageResponse.put("error","Yorum yapılamadı.");
               return ResponseEntity.badRequest().body(messageResponse);
           }
@@ -49,7 +49,8 @@ public class CommentService {
               commentRepository.save(comment);
               userRepository.save(authenticatedUser);
               venueRepository.save(venue);
-              return ResponseEntity.ok().body(commentResponse);
+              messageResponse.put("message","Yorum eklendi.");
+              return ResponseEntity.badRequest().body(messageResponse);
           } else {
               messageResponse.put("error","Yorum yapılamadı.");
               return ResponseEntity.ok().body(messageResponse);
