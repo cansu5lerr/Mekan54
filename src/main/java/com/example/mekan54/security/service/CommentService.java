@@ -50,7 +50,7 @@ public class CommentService {
               userRepository.save(authenticatedUser);
               venueRepository.save(venue);
               messageResponse.put("message","Yorum eklendi.");
-              return ResponseEntity.badRequest().body(messageResponse);
+              return ResponseEntity.ok().body(messageResponse);
           } else {
               messageResponse.put("error","Yorum yapılamadı.");
               return ResponseEntity.ok().body(messageResponse);
