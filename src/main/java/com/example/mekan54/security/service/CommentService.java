@@ -65,16 +65,21 @@ public class CommentService {
       Map<String, String> messageResponse = new HashMap<>();
       if(authenticatedUser instanceof  User) {
           Optional <Venue> venueOptional = venueRepository.findById(venueId);
+
      if(venueOptional.isPresent()) {
          Venue venue= venueOptional.get();
          Optional <Comment> commentOptional= commentRepository.findById(commentId);
+
         if(commentOptional.isPresent()) {
             Comment comment = commentOptional.get();
+            if(comment.getUser().equals(authenticatedUser)){
             venue.getComments().remove(comment);
             authenticatedUser.getComments().remove(comment);
             deleteComment(authenticatedUser,venue,comment);
             messageResponse.put("error","Yorum kaldırıldı.");
             return ResponseEntity.ok().body(messageResponse);
+            }
+            
         }
          messageResponse.put("error","Yorum kaldırılamadı.");
         return ResponseEntity.badRequest().body(messageResponse);
