@@ -86,10 +86,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             List<Map<String,String>> commentList = new ArrayList<>();
             for(Comment comment: commentLists) {
                 Map<String,String> commentMap = new HashMap<>();
-                commentMap.put("id", comment.getId().toString());
+                commentMap.put("commentId", comment.getId().toString());
                 commentMap.put("content", comment.getContent());
-                commentMap.put("userImgUrl", authenticatedUser.getProfileImage().getImgUrl());
                 commentMap.put("venueName", comment.getVenue().getVenueName());
+                commentMap.put("venueId", comment.getVenue().getId().toString());
                 commentList.add(commentMap);
             }
             userDetailsResponse.setFavoriteVenueList(favoriteVenueList);
