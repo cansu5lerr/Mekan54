@@ -238,7 +238,9 @@ public class VenueService {
                 }
                 return ResponseEntity.ok().body(venuesResponsesList);
             } else {
-                return ResponseEntity.notFound().build(); // Category not found
+                Map<String, String> responseMap = new HashMap<>();
+                responseMap.put("error", "Mekan bulunamadı.");
+                return ResponseEntity.badRequest().body(responseMap); // Category not found
             }
         }
         Map<String, String> responseMap = new HashMap<>();
