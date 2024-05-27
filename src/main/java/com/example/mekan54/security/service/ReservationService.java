@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,15 +33,18 @@ public class ReservationService {
     public ResponseEntity<?> addReservationtheUser (String token, ReservationRequest reservationRequest){
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if(user instanceof User) {
-            List<Reservation> userReservations = reservationRepository.findByUserAndDateTime(user, reservationRequest.getDateTime());
+            String dateTimeString = reservationRequest.getDateTime();
+            LocalDateTime dateTime = parseStringToLocalDateTime(dateTimeString);
+            List<Reservation> userReservations = reservationRepository.findByUserAndDateTime(user, dateTime);
             if(!userReservations.isEmpty()) {
                 Map<String, String> responseMap = new HashMap<>();
                 responseMap.put("error", "Bu randevu zaten alınmışsınız!");
                 return ResponseEntity.badRequest().body(responseMap);
             }
+
             Optional<Venue> optionalVenue = venueRepository.findById(reservationRequest.getVenueId());
             Venue venue = optionalVenue.get();
-            List<Reservation> venueReservations = reservationRepository.findByVenueAndDateTime(venue, reservationRequest.getDateTime());
+            List<Reservation> venueReservations = reservationRepository.findByVenueAndDateTime(venue, dateTime);
             if(!venueReservations.isEmpty()) {
                 Map<String, String> responseMap = new HashMap<>();
                 responseMap.put("error", "Bu randevu dolu alınmış!");
@@ -49,7 +54,7 @@ public class ReservationService {
             reservation.setUser(user);
             reservation.setVenue(venue);
             reservation.setTotalPeople(reservationRequest.getTotalPeople());
-            reservation.setDateAndTime(reservationRequest.getDateTime());
+            reservation.setDateAndTime(dateTime);
             reservation.setMessage(reservationRequest.getMessage());
             reservation.setStatus(ReservationStatus.PENDING);
             reservationRepository.save(reservation);
@@ -97,7 +102,7 @@ public class ReservationService {
                         UserReservationResponse userReservationResponse = new UserReservationResponse();
                         userReservationResponse.setStatus(reservation.getStatus());
                         userReservationResponse.setTotalPeople(reservation.getTotalPeople());
-                        userReservationResponse.setDateTime(reservation.getDateTime());
+                        userReservationResponse.setDateTime(parseLocalDateTimeToString(reservation.getDateTime()));
                         userReservationResponse.setVenueName(reservation.getVenue().getVenueName());
                         userReservationResponse.setMessage(reservation.getMessage());
                         userReservationResponse.setReservationId(reservation.getId());
@@ -140,7 +145,8 @@ public class ReservationService {
                                     VenueReservationResponse venueReservationResponse = new VenueReservationResponse();
                                     venueReservationResponse.setStatus(reservation.getStatus());
                                     venueReservationResponse.setTotalPeople(reservation.getTotalPeople());
-                                    venueReservationResponse.setDateTime(reservation.getDateTime());
+                                    venueReservationResponse.setTotalPeople(reservation.getTotalPeople());
+                                    venueReservationResponse.setDateTime(parseLocalDateTimeToString(reservation.getDateTime()));
                                     venueReservationResponse.setUserName(reservation.getUser().getName());
                                     venueReservationResponse.setUserSurname(reservation.getUser().getSurname());
                                     venueReservationResponse.setReservationId(reservation.getId());
@@ -253,7 +259,19 @@ public class ReservationService {
         notificationRepository.save(notification);
     }
 
+    private LocalDateTime parseStringToLocalDateTime(String dateTimeString) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            return LocalDateTime.parse(dateTimeString, formatter);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
 
+    private String parseLocalDateTimeToString(LocalDateTime dateTime) {
+            DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            return dateTime.format(FORMATTER);
+    }
 
 
 
