@@ -1,6 +1,6 @@
 package com.example.mekan54.payload.request;
 
-public class VenueUpdateRequest {
+public class  VenueUpdateRequest {
 
     private String venueName;
     private String categoryName;
@@ -9,7 +9,15 @@ public class VenueUpdateRequest {
 
     private String website;
 
+    public Boolean getReservation() {
+        return isReservation;
+    }
 
+    public void setReservation(Boolean reservation) {
+      this.isReservation = reservation;
+    }
+
+    private Boolean isReservation;
 
     public String getPhoneNumber() {
         return phoneNumber;
