@@ -13,6 +13,28 @@ public class Venue {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String venueName;
+    public Set<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public Boolean getReservation() {
+        return isReservation;
+    }
+
+    public void setReservation(Boolean reservation) {
+        isReservation = reservation;
+    }
+
+    private Boolean isReservation;
+
+
+
+    public void setReservations(Set<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Reservation> reservations = new HashSet<>();
 
     public List<Comment> getComments() {
         return comments;

@@ -1,10 +1,10 @@
 package com.example.mekan54.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +32,49 @@ public class User {
     }
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public Set<Reservation> getRezervations() {
+        return reservations;
+    }
+
+    public void setRezervations(Set<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Reservation> reservations = new HashSet<>();
+
+    public Set<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(Set<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Notification> notifications;
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+    public void addNotification(Notification notification) {
+        if (notifications == null) {
+            notifications = new ArrayList<>();
+        }
+        notifications.add(notification);
+    }
+
+    public void removeNotification(Notification notification) {
+        if (notifications != null) {
+            notifications.remove(notification);
+        }
     }
 
     @Size(max=120)
