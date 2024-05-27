@@ -6,7 +6,16 @@ import java.time.LocalDateTime;
 
 public class UserReservationResponse {
     private String venueName;
-    private LocalDateTime dateTime;
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    private String dateTime;
     private int totalPeople;
 
     public Long getReservationId() {
@@ -37,13 +46,7 @@ public class UserReservationResponse {
         this.venueName = venueName;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
 
     public int getTotalPeople() {
         return totalPeople;
