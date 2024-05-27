@@ -117,7 +117,7 @@ public class VenueService {
         messageResponse.put("error","Hatalı giriş tekrar deneyin.");
         return ResponseEntity.badRequest().body(messageResponse);
     }
-    // value getir
+// value getir
     private String getValue(RegisterAdminRequest registerAdminRequest, String field) {
         switch (field) {
             case "Mekan adı":
@@ -349,90 +349,90 @@ public class VenueService {
 
   */
 
-    public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueRequest) {
-        LOGGER.log(Level.INFO, "updateVenue method called with token: {0}", token);
+ public ResponseEntity<?> updateVenue(String token, VenueUpdateRequest venueRequest) {
+     LOGGER.log(Level.INFO, "updateVenue method called with token: {0}", token);
 
-        User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
-        if (authenticatedUser instanceof User) {
-            LOGGER.log(Level.INFO, "Authenticated user found.");
+     User authenticatedUser = userDetailsService.getAuthenticatedUserFromToken(token);
+     if (authenticatedUser instanceof User) {
+         LOGGER.log(Level.INFO, "Authenticated user found.");
 
-            Optional<Venue> venueOptional = venueRepository.findById(authenticatedUser.getVenue().getId());
-            if (venueOptional.isPresent()) {
-                Venue venue = venueOptional.get();
-                LOGGER.log(Level.INFO, "Venue found: {0}", venue);
+         Optional<Venue> venueOptional = venueRepository.findById(authenticatedUser.getVenue().getId());
+         if (venueOptional.isPresent()) {
+             Venue venue = venueOptional.get();
+             LOGGER.log(Level.INFO, "Venue found: {0}", venue);
 
-                Map<String, String> responseMap = new HashMap<>();
-                String[] requiredFields = {"venueName", "adress", "phoneNumber", "website", "workingHour", "categoryName"};
+             Map<String, String> responseMap = new HashMap<>();
+             String[] requiredFields = {"venueName", "adress", "phoneNumber", "website", "workingHour", "categoryName"};
 
-                for (String field : requiredFields) {
-                    String value = getValueByFieldName(venueRequest, field);
-                    if (value == null) {
-                        responseMap.put(field, field + " boş olamaz.");
+             for (String field : requiredFields) {
+                 String value = getValueByFieldName(venueRequest, field);
+                 if (value == null) {
+                     responseMap.put(field, field + " boş olamaz.");
 
-                        LOGGER.log(Level.WARNING, "Validation error: Field '{0}' is required but empty.", field);
+                     LOGGER.log(Level.WARNING, "Validation error: Field '{0}' is required but empty.", field);
 
-                    }
-                }
+                 }
+             }
 
-                if (!responseMap.isEmpty()) {
-                    responseMap.put("message", "Lütfen tüm zorunlu alanları doldurun.");
-                    LOGGER.log(Level.WARNING, "Validation error: {0}", responseMap);
-                    return ResponseEntity.badRequest().body(responseMap);
-                }
-                LOGGER.log(Level.INFO, "Mekan adı güncelleniyor: {0}", venueRequest.getVenueName());
-                venue.setVenueName(venueRequest.getVenueName());
-                LOGGER.log(Level.INFO, "Mekan adresi güncelleniyor: {0}", venueRequest.getAdress());
-                venue.setAdress(venueRequest.getAdress());
-                LOGGER.log(Level.INFO, "Mekan telefon numarası güncelleniyor: {0}", venueRequest.getPhoneNumber());
-                venue.setPhoneNumber(venueRequest.getPhoneNumber());
-                LOGGER.log(Level.INFO, "Mekan web sitesi güncelleniyor: {0}", venueRequest.getWebsite());
-                venue.setWebsite(venueRequest.getWebsite());
-                LOGGER.log(Level.INFO, "Mekan çalışma saatleri güncelleniyor: {0}", venueRequest.getWorkingHour());
-                venue.setReservation(venueRequest.getReservation());
-                venue.setWorkingHour(venueRequest.getWorkingHour());
-                LOGGER.log(Level.INFO, "Her şey güncellendi: {0}", venueRequest.getWorkingHour());
+             if (!responseMap.isEmpty()) {
+                 responseMap.put("message", "Lütfen tüm zorunlu alanları doldurun.");
+                 LOGGER.log(Level.WARNING, "Validation error: {0}", responseMap);
+                 return ResponseEntity.badRequest().body(responseMap);
+             }
+             LOGGER.log(Level.INFO, "Mekan adı güncelleniyor: {0}", venueRequest.getVenueName());
+             venue.setVenueName(venueRequest.getVenueName());
+             LOGGER.log(Level.INFO, "Mekan adresi güncelleniyor: {0}", venueRequest.getAdress());
+             venue.setAdress(venueRequest.getAdress());
+             LOGGER.log(Level.INFO, "Mekan telefon numarası güncelleniyor: {0}", venueRequest.getPhoneNumber());
+             venue.setPhoneNumber(venueRequest.getPhoneNumber());
+             LOGGER.log(Level.INFO, "Mekan web sitesi güncelleniyor: {0}", venueRequest.getWebsite());
+             venue.setWebsite(venueRequest.getWebsite());
+             LOGGER.log(Level.INFO, "Mekan çalışma saatleri güncelleniyor: {0}", venueRequest.getWorkingHour());
+             venue.setReservation(venueRequest.getReservation());
+             venue.setWorkingHour(venueRequest.getWorkingHour());
+             LOGGER.log(Level.INFO, "Her şey güncellendi: {0}", venueRequest.getWorkingHour());
 
-                String categoryName = venueRequest.getCategoryName();
-                LOGGER.log(Level.INFO, "categoryName bulundu {0}", categoryName);
+             String categoryName = venueRequest.getCategoryName();
+             LOGGER.log(Level.INFO, "categoryName bulundu {0}", categoryName);
 
-                if (categoryName != null) {
-                    Long categoryId = categoryService.getCategoryId(categoryName);
-                    Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
+             if (categoryName != null) {
+                 Long categoryId = categoryService.getCategoryId(categoryName);
+                 Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
 
-                    if (optionalCategory.isPresent()) {
-                        Category category = optionalCategory.get();
-                        venue.setCategory(category);
-                        List<Venue> categoryVenue = new ArrayList<>();
-                        categoryVenue.add(venue);
-                        category.setVenues(categoryVenue);
-                        categoryRepository.save(category);
-                        LOGGER.log(Level.INFO, "Category updated for venue. Category ID: {0}", categoryId);
+                 if (optionalCategory.isPresent()) {
+                     Category category = optionalCategory.get();
+                     venue.setCategory(category);
+                     List<Venue> categoryVenue = new ArrayList<>();
+                     categoryVenue.add(venue);
+                     category.setVenues(categoryVenue);
+                     categoryRepository.save(category);
+                     LOGGER.log(Level.INFO, "Category updated for venue. Category ID: {0}", categoryId);
 
-                    } else {
-                        responseMap.put("message", "Hatalı kategori girdisi.");
-                        LOGGER.log(Level.WARNING, "Invalid category input.");
-                        return ResponseEntity.badRequest().body(responseMap);
-                    }
-                }
+                 } else {
+                     responseMap.put("message", "Hatalı kategori girdisi.");
+                     LOGGER.log(Level.WARNING, "Invalid category input.");
+                     return ResponseEntity.badRequest().body(responseMap);
+                 }
+             }
 
-                venueRepository.save(venue);
-                LOGGER.log(Level.INFO, "Venue successfully updated.");
-                responseMap.put("message", "Mekan başarılı bir şekilde güncellendi.");
-                return ResponseEntity.ok().body(responseMap);
+             venueRepository.save(venue);
+             LOGGER.log(Level.INFO, "Venue successfully updated.");
+             responseMap.put("message", "Mekan başarılı bir şekilde güncellendi.");
+             return ResponseEntity.ok().body(responseMap);
 
-            } else {
-                LOGGER.log(Level.WARNING, "Venue not found.");
-                Map<String, String> responseMap = new HashMap<>();
-                responseMap.put("message", "Mekan bulunamadı.");
-                return ResponseEntity.badRequest().body(responseMap);
-            }
-        } else {
-            LOGGER.log(Level.WARNING, "Authentication failed.");
-            Map<String, String> responseMap = new HashMap<>();
-            responseMap.put("message", "Kullanıcı girişi başarısız.");
-            return ResponseEntity.badRequest().body(responseMap);
-        }
-    }
+         } else {
+             LOGGER.log(Level.WARNING, "Venue not found.");
+             Map<String, String> responseMap = new HashMap<>();
+             responseMap.put("message", "Mekan bulunamadı.");
+             return ResponseEntity.badRequest().body(responseMap);
+         }
+     } else {
+         LOGGER.log(Level.WARNING, "Authentication failed.");
+         Map<String, String> responseMap = new HashMap<>();
+         responseMap.put("message", "Kullanıcı girişi başarısız.");
+         return ResponseEntity.badRequest().body(responseMap);
+     }
+ }
     public ResponseEntity<?> getVenuesByName(String token, String venueName) {
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if(user instanceof  User) {
@@ -441,57 +441,57 @@ public class VenueService {
             LOGGER.log(Level.INFO, "Processing venue: " + venues.toString());
 
             List<VenueResponse> venuesResponseList = new ArrayList<>();
-            for (Venue venue : venues) {
-                String venueNameRequest = venue.getVenueName();
-                LOGGER.log(Level.INFO, " venueName: " +venueName);
-                LOGGER.log(Level.INFO, " venue: " +venueNameRequest);
-                if (venueName.equalsIgnoreCase(venueNameRequest)) {
-                    VenueResponse venuesResponse = new VenueResponse();
-                    venuesResponse.setVenueName(venue.getVenueName());
-                    venuesResponse.setId(venue.getId());
-                    List<String> imageUrls = new ArrayList<>();
-                    List<Image> images = venue.getImages();
-                    if (images != null && !images.isEmpty()) {
-                        for (Image image : images) {
-                            imageUrls.add(image.getImgUrl());
-                        }
+        for (Venue venue : venues) {
+            String venueNameRequest = venue.getVenueName();
+            LOGGER.log(Level.INFO, " venueName: " +venueName);
+            LOGGER.log(Level.INFO, " venue: " +venueNameRequest);
+            if (venueName.equalsIgnoreCase(venueNameRequest)) {
+                VenueResponse venuesResponse = new VenueResponse();
+                venuesResponse.setVenueName(venue.getVenueName());
+                venuesResponse.setId(venue.getId());
+                List<String> imageUrls = new ArrayList<>();
+                List<Image> images = venue.getImages();
+                if (images != null && !images.isEmpty()) {
+                    for (Image image : images) {
+                        imageUrls.add(image.getImgUrl());
                     }
-                    venuesResponse.setImgUrl(imageUrls);
-
-                    venuesResponse.setAdress(venue.getAdress());
-                    venuesResponse.setCategoryName(venue.getCategory().getCategoryName());
-                    venuesResponse.setFavoriteSize(venue.getFavorites().size());
-                    venuesResponse.setReservation(venue.getReservation());
-                    List<Map<String, String>> commentsResponseList = new ArrayList<>();
-                    for (Comment comment : venue.getComments()) {
-                        Map<String, String> commentMap = new HashMap<>();
-                        commentMap.put("name", comment.getUser().getName());
-                        commentMap.put("surname", comment.getUser().getSurname());
-                        commentMap.put("comment", comment.getContent());
-                        String imgUrl = (comment.getUser() != null && comment.getUser().getProfileImage() != null)
-                                ? comment.getUser().getProfileImage().getImgUrl()
-                                : null;
-
-                        commentMap.put("imgUrl", imgUrl);
-                        commentMap.put("id", comment.getId().toString());
-                        commentsResponseList.add(commentMap);
-                    }
-
-                    Map<String, String> aboutMap = new HashMap<>();
-                    aboutMap.put("workingHour", venue.getWorkingHour());
-                    aboutMap.put("phoneNumber", venue.getPhoneNumber());
-                    aboutMap.put("address", venue.getAdress());
-                    aboutMap.put("webSite", venue.getWebsite());
-                    venuesResponse.setAbout(aboutMap);
-                    venuesResponse.setComments(commentsResponseList);
-
-                    venuesResponseList.add(venuesResponse);
                 }
+                venuesResponse.setImgUrl(imageUrls);
+
+                venuesResponse.setAdress(venue.getAdress());
+                venuesResponse.setCategoryName(venue.getCategory().getCategoryName());
+                venuesResponse.setFavoriteSize(venue.getFavorites().size());
+                venuesResponse.setReservation(venue.getReservation());
+                List<Map<String, String>> commentsResponseList = new ArrayList<>();
+                for (Comment comment : venue.getComments()) {
+                    Map<String, String> commentMap = new HashMap<>();
+                    commentMap.put("name", comment.getUser().getName());
+                    commentMap.put("surname", comment.getUser().getSurname());
+                    commentMap.put("comment", comment.getContent());
+                    String imgUrl = (comment.getUser() != null && comment.getUser().getProfileImage() != null)
+                            ? comment.getUser().getProfileImage().getImgUrl()
+                            : null;
+
+                    commentMap.put("imgUrl", imgUrl);
+                    commentMap.put("id", comment.getId().toString());
+                    commentsResponseList.add(commentMap);
+                }
+
+                Map<String, String> aboutMap = new HashMap<>();
+                aboutMap.put("workingHour", venue.getWorkingHour());
+                aboutMap.put("phoneNumber", venue.getPhoneNumber());
+                aboutMap.put("address", venue.getAdress());
+                aboutMap.put("webSite", venue.getWebsite());
+                venuesResponse.setAbout(aboutMap);
+                venuesResponse.setComments(commentsResponseList);
+
+                venuesResponseList.add(venuesResponse);
             }
+        }
 
             LOGGER.log(Level.INFO, "Returning response with " + venuesResponseList.size() + " venues");
 
-            return ResponseEntity.ok().body(venuesResponseList);
+        return ResponseEntity.ok().body(venuesResponseList);
         }
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put("error", "Hatalı giriş.");
@@ -559,7 +559,7 @@ public class VenueService {
 
   */
 
-    public ResponseEntity<?> getVenueOwner (String token) {
+     public ResponseEntity<?> getVenueOwner (String token) {
         User user = userDetailsService.getAuthenticatedUserFromToken(token);
         if(user instanceof User) {
             Venue venue = user.getVenue();
@@ -599,10 +599,10 @@ public class VenueService {
             venueResponse.setComments(commentsResponseList);
             return ResponseEntity.ok().body(venueResponse);
         }
-        Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("message", "Kullanıcı başarılı bir şekilde kaydedildi.");
-        return ResponseEntity.badRequest().body(responseMap);
-    }
+         Map<String, String> responseMap = new HashMap<>();
+         responseMap.put("message", "Kullanıcı başarılı bir şekilde kaydedildi.");
+         return ResponseEntity.badRequest().body(responseMap);
+     }
 
     private String getValueByFieldName(VenueUpdateRequest venueRequest, String fieldName) {
         switch (fieldName) {
