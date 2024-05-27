@@ -9,7 +9,18 @@ public class VenueReservationResponse {
     private String userName;
     private String userSurname;
     private String userImgUrl;
-    private LocalDateTime dateTime;
+
+    private int totalPeople;
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    private String dateTime;
 
     public String getMessage() {
         return message;
@@ -55,14 +66,6 @@ public class VenueReservationResponse {
         this.userImgUrl = userImgUrl;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
     public ReservationStatus getStatus() {
         return status;
     }
@@ -81,5 +84,5 @@ public class VenueReservationResponse {
 
     private ReservationStatus status;
 
-    private int totalPeople;
+
 }
