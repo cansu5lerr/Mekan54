@@ -9,6 +9,15 @@ public class VenueResponse {
     private String adress;
     private Integer favoriteSize;
 
+    public Boolean getReservation() {
+        return isReservation;
+    }
+
+    public void setReservation(Boolean reservation) {
+        isReservation = reservation;
+    }
+
+    private Boolean isReservation;
     public List<String> getImgUrl() {
         return imgUrl;
     }
