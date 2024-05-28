@@ -228,7 +228,7 @@ public class ReservationService {
             reservationRepository.save(reservation);
             sendAdminCancellationMessage(user,uservenue,reservation.getDateTime());
             Map<String, String> responseMap = new HashMap<>();
-            responseMap.put("message", "Rezervasyon iptal edildi ve kullanıcıya bildirim gönderildi!");
+            responseMap.put("message", "Rezervasyon iptal edildi ve mekan sahibine bildirim gönderildi!");
             return ResponseEntity.ok().body(responseMap);
         }
         Map<String, String> responseMap = new HashMap<>();
@@ -280,7 +280,7 @@ public class ReservationService {
 
     private void sendCancellationMessage(User user, LocalDateTime dateTime, Venue venue) {
         String notificationMessage = "Sayın " + user.getName() + ",\n\n"
-                +venue.getVenueName() + " " +dateTime.toString()
+                +venue.getVenueName() + " " +parseLocalDateTimeToString(dateTime)
                 + " tarihinde yapmış olduğunuz rezervasyonunuz onaylanmamıştır.";
         Notification notification = new Notification();
         notification.setMessage(notificationMessage);
@@ -290,7 +290,7 @@ public class ReservationService {
     }
     private void sendAdminCancellationMessage(User user, User venueuser, LocalDateTime dateTime) {
         String notificationMessage = "Sayın ilgili"
-                + " " +dateTime.toString()
+                + " " +parseLocalDateTimeToString(dateTime)
                 + " tarihinde yapılmış olan "+ user.getName()+ " "+ user.getSurname()
                 + "isimli kullanıcı randevuyu iptal etmiştir.";
         Notification notification = new Notification();
