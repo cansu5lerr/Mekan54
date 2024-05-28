@@ -261,7 +261,7 @@ public class ReservationService {
                 for(Notification notification : notificationList) {
                     NotificationResponse notificationResponse = new NotificationResponse();
                     notificationResponse.setMessage(notification.getMessage());
-                    notificationResponse.setDateTime(notification.getDateTime());
+                    notificationResponse.setDateTime(parseLocalDateTimeToString(notification.getDateTime()));
                     notificationResponseList.add(notificationResponse);
                 }
                 return ResponseEntity.ok().body(notificationResponseList);
