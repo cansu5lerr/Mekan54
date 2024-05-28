@@ -173,7 +173,30 @@ public class ReservationService {
         responseMap.put("error", "Kullanıcı girişi hatalı.");
         return ResponseEntity.badRequest().body(responseMap);
     }
-    public ResponseEntity<?> deleteReservationVenue (String token, ReservationIdRequest reservationIdRequest) {
+
+
+    public ResponseEntity<?> deleteReservationVenue(String token, Long reservationId) {
+        User venueOwner = userDetailsService.getAuthenticatedUserFromToken(token);
+        if(venueOwner instanceof User) {
+            Optional <Reservation> optionalReservation = reservationRepository.findById(reservationId);
+            if(optionalReservation.isPresent()) {
+                Reservation reservation= optionalReservation.get();
+                Venue venue = reservation.getVenue();
+                if(venue.getUser().equals(venueOwner)) {
+                    reservation.setStatus((ReservationStatus.CANCELLED));
+                    reservationRepository.save(reservation);
+                    sendCancellationMessage(reservation.getUser(),reservation.getDateTime(), venue);
+                    Map<String, String> responseMap = new HashMap<>();
+                    responseMap.put("message", "Rezervasyon iptal edildi ve kullanıcıya bildirim gönderildi!");
+                    return ResponseEntity.ok().body(responseMap);
+                }
+            }
+        }
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("error", "Kullanıcı girişi hatalı veya belirtilen rezervasyon bulunamadı.");
+        return ResponseEntity.badRequest().body(responseMap);
+    }
+  /*  public ResponseEntity<?> deleteReservationVenue (String token, ReservationIdRequest reservationIdRequest) {
         User venueOwner = userDetailsService.getAuthenticatedUserFromToken(token);
         if(venueOwner instanceof User) {
             Optional <Reservation> optionalReservation = reservationRepository.findById(reservationIdRequest.getId());
@@ -189,6 +212,24 @@ public class ReservationService {
                     return ResponseEntity.ok().body(responseMap);
                 }
             }
+        }
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("error", "Kullanıcı girişi hatalı veya belirtilen rezervasyon bulunamadı.");
+        return ResponseEntity.badRequest().body(responseMap);
+    } */
+
+
+    public ResponseEntity<?> deleteReservationUser(String token, Long reservationId) {
+        User user  = userDetailsService.getAuthenticatedUserFromToken(token);
+        if(user instanceof User) {
+            Reservation reservation = reservationRepository.getReferenceById(reservationId);
+            User uservenue = reservation.getVenue().getUser();
+            reservation.setStatus(ReservationStatus.CANCELLED);
+            reservationRepository.save(reservation);
+            sendAdminCancellationMessage(user,uservenue,reservation.getDateTime());
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("message", "Rezervasyon iptal edildi ve kullanıcıya bildirim gönderildi!");
+            return ResponseEntity.ok().body(responseMap);
         }
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put("error", "Kullanıcı girişi hatalı veya belirtilen rezervasyon bulunamadı.");
