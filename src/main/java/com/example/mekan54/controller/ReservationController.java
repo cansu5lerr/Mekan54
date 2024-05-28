@@ -32,23 +32,33 @@ public class ReservationController {
     public ResponseEntity<?> listUserReservation(@RequestHeader("Authorization") String token) {
         return reservationService.listReservationUser(token);
     }
-    @DeleteMapping("/deleteUserReservation")
+    /*@DeleteMapping("/deleteUserReservation")
     public ResponseEntity<?> deleteUserReservation (@RequestHeader("Authorization") String token,
                                                     @RequestBody ReservationIdRequest reservationIdRequest) {
         return reservationService.deleteReservationUser(token,reservationIdRequest);
-    }
+    } */
 
-    @DeleteMapping("/deleteVenueReservation")
+  /*  @DeleteMapping("/deleteVenueReservation")
     public ResponseEntity<?> deleteVenueReservation(@RequestHeader("Authorization") String token,
                                                     @RequestBody ReservationIdRequest reservationIdRequest)
     {
         return reservationService.deleteReservationVenue(token,reservationIdRequest);
-    }
+    } */
 
     @GetMapping("/listNotification")
     public ResponseEntity<?> listNotification(@RequestHeader("Authorization") String token) {
         return reservationService.listNotification(token);
     }
 
+    @DeleteMapping("/deleteVenueReservation/{reservationId}")
+    public ResponseEntity<?> deleteVenueReservation(@RequestHeader("Authorization") String token, @PathVariable Long reservationId) {
+        return reservationService.deleteReservationVenue(token, reservationId);
+    }
+
+    @DeleteMapping("/deleteUserReservation/{reservationId}")
+    public ResponseEntity<?> deleteUserReservation(@RequestHeader("Authorization") String token, @PathVariable
+                                                   Long reservationId) {
+        return reservationService.deleteReservationUser(token,reservationId);
+    }
 
 }
