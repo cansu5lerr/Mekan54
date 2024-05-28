@@ -279,8 +279,8 @@ public class ReservationService {
     }
 
     private void sendCancellationMessage(User user, LocalDateTime dateTime, Venue venue) {
-        String notificationMessage = "Sayın " + user.getName() + ",\n\n"
-                +venue.getVenueName() + " " +parseLocalDateTimeToString(dateTime)
+        String notificationMessage = "Sayın " + user.getName() + " "
+                +venue.getVenueName() + " mekanına " +parseLocalDateTimeToString(dateTime)
                 + " tarihinde yapmış olduğunuz rezervasyonunuz onaylanmamıştır.";
         Notification notification = new Notification();
         notification.setMessage(notificationMessage);
