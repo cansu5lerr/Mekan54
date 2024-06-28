@@ -1,4 +1,4 @@
-# Proje Adı
+# Mekan54
 
 Bu proje, kullanıcıların çeşitli mekanları keşfetmelerine, yorum yapmalarına, rezervasyon yapmalarına ve favori mekanlarını yönetmelerine olanak tanıyan bir platformdur. Aynı zamanda mekan sahipleri, işletmeleri hakkında detaylı bilgileri güncelleyebilir ve kullanıcı yorumlarını takip edebilirler.
 
@@ -9,74 +9,74 @@ Bu proje, kullanıcıların çeşitli mekanları keşfetmelerine, yorum yapmalar
 #### 1. Kullanıcı Kayıt Ekranı
 Kullanıcı, ad, soyad, e-posta adresi, parola ve parola tekrarı gibi bilgileri girerek kayıt işlemini tamamlar. Giriş bilgilerinde uygunluk kontrolleri yapılır ve kayıt başarılı ise kullanıcı giriş ekranına yönlendirilir.
 
-![Kullanıcı Kayıt Ekranı](images/KullanıcıKayıtEkranı.png)
+<img src="images/KullanıcıKayıtEkranı.png" alt="Kullanıcı Kayıt Ekranı" width="400">
 
 #### 2. Kullanıcı Ana Ekranı
 Bu ekran, kullanıcıya tüm mekanları kategorilere ayrılmış bir şekilde listeleyerek sunar. Kullanıcı, kategorilere ve isimlere göre arama yapabilir.
 
-![Anasayfa Ekranı](Şekil3.5.AnasayfaEkranı.png)
+<img src="images/AnasayfaEkranı.png" alt="Anasayfa Ekranı" width="400">
 
 #### 3. Mekan Detay Sayfası
 Mekan hakkında detaylı bilgilerin yer aldığı bu sayfada, kullanıcı mekanın yol tarifi, genel bilgiler ve mekanla ilgili yapılan yorumları görebilir. Ayrıca, kullanıcı bu sayfa üzerinden mekana ait yeni yorumlar ekleyebilir ve isteğe bağlı olarak mekanı paylaşabilir.
 
-![Mekan Detay (Hakkında) Ekranı](Şekil3.6.MekanDetayHakkındaEkranı.png)
-![Mekan Detay (Yorumlar) Ekranı](Şekil3.7.MekanDetayYorumlarEkranı.png)
+<img src="images/MekanDetayHakkındaEkranı.png" alt="Mekan Detay (Hakkında) Ekranı" width="400">
+<img src="images/MekanDetayYorumlarEkranı.png" alt="Mekan Detay (Yorumlar) Ekranı" width="400">
 
 #### 4. Kullanıcı Profil Ekranı
 Bu ekran, kullanıcının favori mekanlarını ve kendi yorumlarını görüntüleyebileceği bir alan sunar. Aynı zamanda kullanıcı, kişisel bilgilerini güncelleyebilir.
 
-![Kullanıcı Profil (Favorilerim) Ekranı](Şekil3.8.KullanıcıProfilFavorilerimEkranı.png)
-![Kullanıcı Profil (Favorilerim) Ekranı](Şekil3.9.KullanıcıProfilFavorilerimEkranı.png)
-![Profil Güncelleme Ekranı](Şekil3.10.ProfilGüncellemeEkranı.png)
+<img src="images/KullanıcıProfilFavorilerimEkranı.png" alt="Kullanıcı Profil (Favorilerim) Ekranı" width="400">
+<img src="images/KullanıcıProfilFavorilerimEkranı.png" alt="Kullanıcı Profil (Favorilerim) Ekranı" width="400">
+<img src="images/ProfilGüncellemeEkranı.png" alt="Profil Güncelleme Ekranı" width="400">
 
 #### 5. Rezervasyon İşlemleri
 Kullanıcılar, rezervasyon yapma ve mevcut rezervasyonlarını görüntüleme işlemlerini bu ekranlardan gerçekleştirebilirler.
 
-![Rezervasyon Yapma Ekranı](Şekil3.11.RezervasyonYapmaEkranı.png)
-![Rezervasyonlarım Ekranı](Şekil3.12.RezervasyonlarımEkranı.png)
+<img src="images/RezervasyonYapmaEkranı.png" alt="Rezervasyon Yapma Ekranı" width="400">
+<img src="images/RezervasyonlarımEkranı.png" alt="Rezervasyonlarım Ekranı" width="400">
 
 #### 6. Bildirimler Ekranı
 Kullanıcılar, mekanlardan veya sistemden gelen bildirimleri bu ekran üzerinden takip edebilirler.
 
-![Bildirimler Ekranı](Şekil3.13.BildirimlerEkranı.png)
+<img src="images/BildirimlerEkranı.png" alt="Bildirimler Ekranı" width="400">
 
 ### Mekan Sahibi Ekranları
 
 #### 1. Giriş Ekranı
 Mekan sahibi, platforma kayıt olurken belirlediği e-posta adresi ve güvenli şifresi ile sisteme giriş yapar. "Beni Hatırla" seçeneği sayesinde, kullanıcının bir süre boyunca tekrar giriş yapma ihtiyacı ortadan kalkar.
 
-![Mekan Sahibi Giriş Ekranı](Şekil3.14.MekanSahibiGirişEkranı.png)
+<img src="images/MekanSahibiGirişEkranı.png" alt="Mekan Sahibi Giriş Ekranı" width="400">
 
 #### 2. Kayıt Ekranı
 Mekan sahibi, işletmesinin detaylarını içeren önemli bilgileri giriş yaparak sisteme kaydeder. Bu adımda eksik veya hatalı bilgi girilmesi durumunda, kullanıcıya anında geri bildirim sağlanır ve kayıt işlemi doğrulandığında giriş ekranına yönlendirilir.
 
-![Mekan Sahibi Kayıt Ekranı](Şekil3.15.MekanSahibiKayıtEkranı.png)
+<img src="images/MekanSahibiKayıtEkranı.png" alt="Mekan Sahibi Kayıt Ekranı" width="400">
 
 #### 3. Mekan Yorumları Ekranı
 İşletme sahipleri, kendi mekanlarına gelen yorumları bu ekran üzerinden inceleyebilir ve değerlendirebilirler. Bu sayede işletmelerine dair geri bildirimleri takip etmek daha kolay hale gelir.
 
-![Mekan Yorumları Ekranı](Şekil3.16.MekanYorumlarıEkranı.png)
+<img src="images/MekanYorumlarıEkranı.png" alt="Mekan Yorumları Ekranı" width="400">
 
 #### 4. Mekan Profil Ekranı
 Mekanın detaylı profil bilgileri ve görselleri, mekan sahibine kullanıcı dostu bir arayüzle sunulur. Profil güncelleme ikonu aracılığıyla mekan sahibi, işletme bilgilerini anında düzenleme şansına sahiptir.
 
-![Mekan Profil Ekranı](Şekil3.17.MekanProfilEkranı.png)
+<img src="images/MekanProfilEkranı.png" alt="Mekan Profil Ekranı" width="400">
 
 #### 5. Mekan Güncelleme Ekranı
 İşletme sahipleri, mekanlarıyla ilgili bilgileri ve fotoğrafları güncelleyebilirler. Maksimum dört adet fotoğraf yükleyebilen mekan sahipleri, işletmelerini en iyi şekilde temsil etmeye olanak tanır.
 
-![Mekan Sahibi Kayıt Ekranı](Şekil3.18.MekanSahibiKayıtEkranı.png)
+<img src="images/MekanSahibiKayıtEkranı.png" alt="Mekan Sahibi Kayıt Ekranı" width="400">
 
 #### 6. Rezervasyon İşlemleri
 Rezervasyonun durumu otomatik olarak kullanıcıya bildirim olarak gönderilir.
 
-![Rezervasyon İstekleri Sayfası](Şekil3.19.RezervasyonİstekleriSayfası.png)
+<img src="images/RezervasyonİstekleriSayfası.png" alt="Rezervasyon İstekleri Sayfası" width="400">
 
 ### Ortak Ekranlar
 
 #### 1. Parola Yenileme Ekranları
 Bu ekranda kullanıcının veya mekan sahibinin e-posta adresi istenir. Böyle bir e-posta adresi olması halinde, güvenlik kodu gönderilir ve kod doğrulama ekranı açılır. Kod doğru girildiğinde, parola yenileme ekranı açılır.
 
-![E-posta Ekranı](Şekil3.20.EpostaEkranı.png)
-![Kod Doğrulama Ekranı](Şekil3.21.KodDoğrulamaEkranı.png)
-![Parola Sıfırlama E-postası](Şekil3.22.ParolaSıfırlamaEpostası.png)
+<img src="images/EpostaEkranı.png" alt="E-posta Ekranı" width="400">
+<img src="images/KodDoğrulamaEkranı.png" alt="Kod Doğrulama Ekranı" width="400">
+<img src="images/ParolaSıfırlamaEpostası.png" alt="Parola Sıfırlama E-postası" width="400">
