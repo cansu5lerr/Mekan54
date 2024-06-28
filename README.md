@@ -19,7 +19,7 @@ Bu ekran, kullanıcıya tüm mekanları kategorilere ayrılmış bir şekilde li
 #### 3. Mekan Detay Sayfası
 Mekan hakkında detaylı bilgilerin yer aldığı bu sayfada, kullanıcı mekanın yol tarifi, genel bilgiler ve mekanla ilgili yapılan yorumları görebilir. Ayrıca, kullanıcı bu sayfa üzerinden mekana ait yeni yorumlar ekleyebilir ve isteğe bağlı olarak mekanı paylaşabilir.
 
-<img src="images/MekanDetayHakkındaEkranı.png" alt="Mekan Detay (Hakkında) Ekranı" width="400">
+<img src="images/MekanDetayHakkındaEkranı.jpg" alt="Mekan Detay (Hakkında) Ekranı" width="400">
 <img src="images/MekanDetayYorumlarEkranı.jpg" alt="Mekan Detay (Yorumlar) Ekranı" width="200">
 
 #### 4. Kullanıcı Profil Ekranı
