@@ -9,7 +9,7 @@ Bu proje, kullanıcıların çeşitli mekanları keşfetmelerine, yorum yapmalar
 #### 1. Kullanıcı Kayıt Ekranı
 Kullanıcı, ad, soyad, e-posta adresi, parola ve parola tekrarı gibi bilgileri girerek kayıt işlemini tamamlar. Giriş bilgilerinde uygunluk kontrolleri yapılır ve kayıt başarılı ise kullanıcı giriş ekranına yönlendirilir.
 
-![Kullanıcı Kayıt Ekranı](Şekil3.4.KullanıcıKayıtEkranı.png)
+![Kullanıcı Kayıt Ekranı](images/Kullanıcı Kayıt Ekranı.jpg)
 
 #### 2. Kullanıcı Ana Ekranı
 Bu ekran, kullanıcıya tüm mekanları kategorilere ayrılmış bir şekilde listeleyerek sunar. Kullanıcı, kategorilere ve isimlere göre arama yapabilir.
